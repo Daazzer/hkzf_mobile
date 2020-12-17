@@ -33,7 +33,7 @@ $ npm run eject
 - 前端框架：[React](https://reactjs.org/)
 - 脚手架工具：[Create React App](https://create-react-app.dev/)
 - 前端路由：[React-Router](https://reactrouter.com/)
-- UI 框架：[Aut Design Mobile](https://mobile.ant.design/)
+- UI 框架：[Ant Design Mobile](https://mobile.ant.design/)
 - 字体图标：[iconfont](https://www.iconfont.cn/)
 - Ajax 请求：[Axios](https://github.com/axios/axios)
 - 地图：[百度地图](http://lbsyun.baidu.com/index.php?title=jspopularGL)
