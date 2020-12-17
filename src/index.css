@@ -53,3 +53,7 @@ body {
   color: #333;
   background-color: #fff;
 }
+
+.tab-bar-nav .iconfont {
+  font-size: 20px;
+}
