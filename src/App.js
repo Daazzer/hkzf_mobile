@@ -9,7 +9,7 @@ import CityList from './pages/CityList';
 
 function App() {
   return (
-    <div id="app">
+    <div className="App">
       <Router>
         <ul>
           <li>
