@@ -41,7 +41,7 @@ function RouterTabNav() {
   const history = useHistory();
 
   return (
-    <div className="tab-bar-nav" style={{ position: 'fixed', height: '100%', width: '100%', top: 0 }}>
+    <div className="tab-bar-nav">
       <TabBar
         unselectedTintColor="#949494"
         tintColor="#21b97a"
