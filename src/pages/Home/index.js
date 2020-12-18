@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Carousel, Flex, Toast, ActivityIndicator } from 'antd-mobile';
+import { Carousel, Flex, Toast, ActivityIndicator, Grid } from 'antd-mobile';
 import { getSwiper, getGroups, getNews } from '../../utils/api';
 import './index.scss';
 
@@ -160,8 +160,13 @@ class RecommendRent extends Component {
       );
     } else {
       recommendRentList = (
-        <Flex className="recommend-rent-list" wrap="wrap">
-          {this.state.rentItems.map(rentItem =>
+        <Grid
+          className="recommend-rent-list"
+          data={this.state.rentItems}
+          square={false}
+          hasLine={false}
+          columnNum={2}
+          renderItem={rentItem =>
             <div className="recommend-rent-list__item" key={rentItem.id}>
               <div className="desc">
                 <h3>{rentItem.title}</h3>
@@ -169,8 +174,8 @@ class RecommendRent extends Component {
               </div>
               <img src={rentItem.imgSrc} alt="recom" />
             </div>
-          )}
-        </Flex>
+          }
+        />
       );
     }
 

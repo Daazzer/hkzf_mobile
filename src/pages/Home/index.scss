@@ -91,14 +91,24 @@
     }
   }
   &-list {
+    .am-flexbox {
+      margin-bottom: 10px;
+      background-color: transparent;
+    }
+    .am-grid-item {
+      background-color: #fff;
+      &:nth-child(2n) {
+        margin-left: 10px;
+      }
+      &-content {
+        padding: 0 !important;
+      }
+    }
     &__item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: calc(50% - 5px);
       padding: 15px 20px 30px;
-      margin-bottom: 10px;
-      background-color: #fff;
       &:nth-child(2n) {
         margin-left: 10px;
       }
