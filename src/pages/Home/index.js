@@ -9,6 +9,7 @@ function Home() {
       <Swiper />
       <CateNav />
       <RecommendRent />
+      <News />
     </div>
   );
 }
@@ -133,6 +134,46 @@ function RecommendRent() {
           <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
         </div>
       </Flex>
+    </div>
+  );
+}
+
+function News() {
+  return (
+    <div className="news">
+      <h2 className="news-title">最新资讯</h2>
+      <div className="news-list">
+        <Flex className="news-list__item" align="start">
+          <img src="http://localhost:8080/img/news/1.png" alt="news-pic" />
+          <div className="desc">
+            <h3>置业选择 | 安贞西里 三室一厅 河间的古雅别院</h3>
+            <p>
+              <span>新华网</span>
+              <span>两天前</span>
+            </p>
+          </div>
+        </Flex>
+        <Flex className="news-list__item" align="start">
+          <img src="http://localhost:8080/img/news/1.png" alt="news-pic" />
+          <div className="desc">
+            <h3>置业选择 | 安贞西里 三室一厅 河间的古雅别院</h3>
+            <p>
+              <span>新华网</span>
+              <span>两天前</span>
+            </p>
+          </div>
+        </Flex>
+        <Flex className="news-list__item" align="start">
+          <img src="http://localhost:8080/img/news/1.png" alt="news-pic" />
+          <div className="desc">
+            <h3>置业选择 | 安贞西里 三室一厅 河间的古雅别院</h3>
+            <p>
+              <span>新华网</span>
+              <span>两天前</span>
+            </p>
+          </div>
+        </Flex>
+      </div>
     </div>
   );
 }
