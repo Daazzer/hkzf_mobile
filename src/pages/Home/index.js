@@ -1,5 +1,6 @@
 import { Component } from 'react';
-import { Carousel, Flex } from 'antd-mobile';
+import { Carousel, Flex, Toast } from 'antd-mobile';
+import { getSwiper, getGroups, getNews } from '../../utils/api';
 import './index.scss';
 
 function Home() {
@@ -18,10 +19,31 @@ class Swiper extends Component {
   constructor() {
     super();
     this.state = {
-      data: ['AiyWuByWklrrUDlFignR', 'TekJlZRVCjLFexlOCuWn', 'IJOtIlfsYdTyaDTRVrLI'],
-      imgHeight: 176,
-    }
+      carouselItems: [],
+    };
+    this.renderCarousel();
   }
+
+  async renderCarousel () {
+    const [err, res] = await getSwiper();
+
+    if (err) {
+      Toast.fail('获取轮播图失败');
+      return;
+    }
+
+    const baseURL = res.config.baseURL;
+
+    const carouselItems = res.data.body.map(carouselItem => ({
+      ...carouselItem,
+      imgSrc: baseURL + carouselItem.imgSrc
+    }))
+
+    this.setState({
+      carouselItems
+    });
+  }
+
   render() {
     return (
       <Carousel
@@ -29,17 +51,13 @@ class Swiper extends Component {
         infinite
         autoplayInterval={5000}
       >
-        {this.state.data.map(val => (
+        {this.state.carouselItems.map(carouselItem => (
           <img
-            src={`https://zos.alipayobjects.com/rmsportal/${val}.png`}
-            alt="a"
+            key={carouselItem.id}
+            src={carouselItem.imgSrc}
+            alt={carouselItem.alt}
             style={{ width: '100%', verticalAlign: 'top' }}
-            onLoad={() => {
-              // fire window resize event to change height
-              window.dispatchEvent(new Event('resize'));
-              this.setState({ imgHeight: 'auto' });
-            }}
-            key={val}
+            onLoad={() => window.dispatchEvent(new Event('resize'))}
           />
         ))}
       </Carousel>
@@ -97,85 +115,102 @@ function CateNav() {
   );
 }
 
-function RecommendRent() {
-  return (
-    <div className="recommend-rent">
-      <h2 className="recommend-rent-title">
-        租房小组
-        <span className="more">更多</span>
-      </h2>
-      <Flex className="recommend-rent-list" wrap="wrap">
-        <div className="recommend-rent-list__item">
-          <div className="desc">
-            <h3>家住回龙观</h3>
-            <p>归属的感觉</p>
-          </div>
-          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
-        </div>
-        <div className="recommend-rent-list__item">
-          <div className="desc">
-            <h3>家住回龙观</h3>
-            <p>归属的感觉</p>
-          </div>
-          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
-        </div>
-        <div className="recommend-rent-list__item">
-          <div className="desc">
-            <h3>家住回龙观</h3>
-            <p>归属的感觉</p>
-          </div>
-          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
-        </div>
-        <div className="recommend-rent-list__item">
-          <div className="desc">
-            <h3>家住回龙观</h3>
-            <p>归属的感觉</p>
-          </div>
-          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
-        </div>
-      </Flex>
-    </div>
-  );
-}
+class RecommendRent extends Component {
+  constructor() {
+    super();
+    this.state = {
+      rentItems: []
+    };
+    this.renderRentItems();
+  }
 
-function News() {
-  return (
-    <div className="news">
-      <h2 className="news-title">最新资讯</h2>
-      <div className="news-list">
-        <Flex className="news-list__item" align="start">
-          <img src="http://localhost:8080/img/news/1.png" alt="news-pic" />
-          <div className="desc">
-            <h3>置业选择 | 安贞西里 三室一厅 河间的古雅别院</h3>
-            <p>
-              <span>新华网</span>
-              <span>两天前</span>
-            </p>
-          </div>
-        </Flex>
-        <Flex className="news-list__item" align="start">
-          <img src="http://localhost:8080/img/news/1.png" alt="news-pic" />
-          <div className="desc">
-            <h3>置业选择 | 安贞西里 三室一厅 河间的古雅别院</h3>
-            <p>
-              <span>新华网</span>
-              <span>两天前</span>
-            </p>
-          </div>
-        </Flex>
-        <Flex className="news-list__item" align="start">
-          <img src="http://localhost:8080/img/news/1.png" alt="news-pic" />
-          <div className="desc">
-            <h3>置业选择 | 安贞西里 三室一厅 河间的古雅别院</h3>
-            <p>
-              <span>新华网</span>
-              <span>两天前</span>
-            </p>
-          </div>
+  async renderRentItems() {
+    const [err, res] = await getGroups({
+      area: 'AREA|88cff55c-aaa4-e2e0'
+    });
+
+    if (err) {
+      return Toast.fail('获取租房推荐列表信息失败');
+    }
+
+    const baseURL = res.config.baseURL;
+    const rentItems = res.data.body.map(rentItem => ({
+      ...rentItem,
+      imgSrc: baseURL + rentItem.imgSrc
+    }));
+
+    this.setState({ rentItems });
+  }
+
+  render() {
+    return (
+      <div className="recommend-rent">
+        <h2 className="recommend-rent-title">
+          租房小组
+          <span className="more">更多</span>
+        </h2>
+        <Flex className="recommend-rent-list" wrap="wrap">
+          {this.state.rentItems.map(rentItem =>
+            <div className="recommend-rent-list__item" key={rentItem.id}>
+              <div className="desc">
+                <h3>{rentItem.title}</h3>
+                <p>{rentItem.desc}</p>
+              </div>
+              <img src={rentItem.imgSrc} alt="recom" />
+            </div>
+          )}
         </Flex>
       </div>
-    </div>
-  );
+    );
+  }
+}
+
+class News extends Component {
+  constructor() {
+    super();
+    this.state = {
+      newsItems: []
+    };
+    this.renderNewsItems();
+  }
+
+  async renderNewsItems() {
+    const [err, res] = await getNews({ area: 'AREA|88cff55c-aaa4-e2e0' });
+
+    if (err) {
+      Toast.fail('获取最新资讯信息失败');
+      return;
+    }
+
+    const baseURL = res.config.baseURL;
+    const newsItems = res.data.body.map(newsItem => ({
+      ...newsItem,
+      imgSrc: baseURL + newsItem.imgSrc
+    }));
+    this.setState({ newsItems })
+  }
+
+  render() {
+    return (
+      <div className="news">
+        <h2 className="news-title">最新资讯</h2>
+        <div className="news-list">
+          {this.state.newsItems.map(newsItem =>
+            <Flex className="news-list__item" align="start" key={newsItem.id}>
+              <img src={newsItem.imgSrc} alt="news-pic" />
+              <div className="desc">
+                <h3>{newsItem.title}</h3>
+                <p>
+                  <span>{newsItem.from}</span>
+                  <span>{newsItem.date}</span>
+                </p>
+              </div>
+            </Flex>
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Home;
