@@ -7,7 +7,6 @@
 
 html,
 body {
-  height: 100%;
   font-family: 'Microsoft YaHei';
   color: #333;
   background-color: #fff;
@@ -23,12 +22,6 @@ body {
   font-size: 20px;
 }
 
-html,
-body,
-#root,
 .App {
-  height: 100%;
-}
-.App {
-  padding-bottom: 1000px;
+  padding-bottom: 50px;
 }
