@@ -67,6 +67,14 @@
   padding: 0 10px;
   background-color: #f6f5f6;
   overflow: hidden;
+  &--none, &--loading {
+    text-align: center;
+    padding: 20px 0 40px;
+  }
+  &--loading {
+    display: flex;
+    justify-content: center;
+  }
   &-title {
     margin: 15px 0;
     padding-left: 10px;

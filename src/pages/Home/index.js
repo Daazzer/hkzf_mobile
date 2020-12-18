@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Carousel, Flex, Toast } from 'antd-mobile';
+import { Carousel, Flex, Toast, ActivityIndicator } from 'antd-mobile';
 import { getSwiper, getGroups, getNews } from '../../utils/api';
 import './index.scss';
 
@@ -119,17 +119,19 @@ class RecommendRent extends Component {
   constructor() {
     super();
     this.state = {
-      rentItems: []
+      rentItems: [],
+      loading: false
     };
-    this.renderRentItems();
   }
 
   async renderRentItems() {
+    this.setState({ loading: true });
     const [err, res] = await getGroups({
       area: 'AREA|88cff55c-aaa4-e2e0'
     });
 
     if (err) {
+      this.setState({ loading: false });
       return Toast.fail('获取租房推荐列表信息失败');
     }
 
@@ -138,17 +140,26 @@ class RecommendRent extends Component {
       ...rentItem,
       imgSrc: baseURL + rentItem.imgSrc
     }));
-
+    this.setState({ loading: false });
     this.setState({ rentItems });
   }
 
+  componentDidMount() {
+    this.renderRentItems();
+  }
+
   render() {
-    return (
-      <div className="recommend-rent">
-        <h2 className="recommend-rent-title">
-          租房小组
-          <span className="more">更多</span>
-        </h2>
+    let recommendRentList = null;
+    if (this.state.rentItems.length === 0 && !this.state.loading) {
+      recommendRentList = <div className="recommend-rent--none">暂无数据</div>;
+    } else if (this.state.loading) {
+      recommendRentList = (
+        <div className="recommend-rent--loading">
+          <ActivityIndicator text="加载中..." />
+        </div>
+      );
+    } else {
+      recommendRentList = (
         <Flex className="recommend-rent-list" wrap="wrap">
           {this.state.rentItems.map(rentItem =>
             <div className="recommend-rent-list__item" key={rentItem.id}>
@@ -160,6 +171,16 @@ class RecommendRent extends Component {
             </div>
           )}
         </Flex>
+      );
+    }
+
+    return (
+      <div className="recommend-rent">
+        <h2 className="recommend-rent-title">
+          租房小组
+          <span className="more">更多</span>
+        </h2>
+        {recommendRentList}
       </div>
     );
   }
