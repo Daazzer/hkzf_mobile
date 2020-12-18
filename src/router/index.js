@@ -79,8 +79,8 @@ function Router() {
     <BrowserRouter>
       <Suspense fallback={<ActivityIndicator className="router-loading" size="large" text="加载中..." />}>
         <RouterView />
-        <RouterTabNav />
       </Suspense>
+      <RouterTabNav />
     </BrowserRouter>
   );
 }
