@@ -190,16 +190,18 @@ class News extends Component {
   constructor() {
     super();
     this.state = {
-      newsItems: []
+      newsItems: [],
+      loading: false
     };
-    this.renderNewsItems();
   }
 
   async renderNewsItems() {
+    this.setState({ loading: true });
     const [err, res] = await getNews({ area: 'AREA|88cff55c-aaa4-e2e0' });
 
     if (err) {
       Toast.fail('获取最新资讯信息失败');
+      this.setState({ loading: false });
       return;
     }
 
@@ -208,13 +210,26 @@ class News extends Component {
       ...newsItem,
       imgSrc: baseURL + newsItem.imgSrc
     }));
-    this.setState({ newsItems })
+    this.setState({ newsItems });
+    this.setState({ loading: false });
+  }
+
+  componentDidMount() {
+    this.renderNewsItems();
   }
 
   render() {
-    return (
-      <div className="news">
-        <h2 className="news-title">最新资讯</h2>
+    let newsList = null;
+    if (this.state.newsItems.length === 0 && !this.state.loading) {
+      newsList = <div className="news-list--none">暂无数据</div>;
+    } else if (this.state.loading) {
+      newsList = (
+        <div className="news-list--loading">
+          <ActivityIndicator text="加载中..." />
+        </div>
+      );
+    } else {
+      newsList = (
         <div className="news-list">
           {this.state.newsItems.map(newsItem =>
             <Flex className="news-list__item" align="start" key={newsItem.id}>
@@ -229,6 +244,13 @@ class News extends Component {
             </Flex>
           )}
         </div>
+      );
+    }
+
+    return (
+      <div className="news">
+        <h2 className="news-title">最新资讯</h2>
+        {newsList}
       </div>
     );
   }
