@@ -29,3 +29,6 @@ body,
 .App {
   height: 100%;
 }
+.App {
+  padding-bottom: 1000px;
+}
