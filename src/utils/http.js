@@ -5,6 +5,7 @@ import axios from 'axios';
  * @see 线上地址 {@link http://157.122.54.189:9060}
  * @see 本地地址 {@link http://localhost:8080}
  */
+
 const http = {
   baseURL: 'http://157.122.54.189:9060',
 
@@ -23,8 +24,8 @@ const http = {
    * @returns {Promise}
    */
   get(url, params) {
-    url = this.baseURL + url;
     return this.responseHandle(axios.get(url, {
+      baseURL: this.baseURL,
       params
     }));
   },
@@ -36,8 +37,9 @@ const http = {
    * @returns {Promise}
    */
   post(url, data) {
-    url = this.baseURL + url;
-    return this.responseHandle(axios.post(url, data));
+    return this.responseHandle(axios.post(url, data, {
+      baseURL: this.baseURL
+    }));
   }
 };
 
