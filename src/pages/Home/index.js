@@ -64,21 +64,50 @@ function SearchBar() {
 }
 
 function CateNav() {
+  const cateNavs = [
+    {
+      title: '整租',
+      image: require('@/assets/images/nav-1.png').default
+    },
+    {
+      title: '合租',
+      image: require('@/assets/images/nav-2.png').default
+    },
+    {
+      title: '地图找房',
+      image: require('@/assets/images/nav-3.png').default
+    },
+    {
+      title: '去出租',
+      image: require('@/assets/images/nav-4.png').default
+    }
+  ];
+
   return (
-    <Flex>
-      <Flex.Item>
-        整租
-      </Flex.Item>
-      <Flex.Item>
-        合租
-      </Flex.Item>
-      <Flex.Item>
-        地图找房
-      </Flex.Item>
-      <Flex.Item>
-        去出租
-      </Flex.Item>
+    <Flex className="cate-nav">
+      {cateNavs.map(cateNav =>
+        <Flex.Item className="cate-nav__item" key={cateNav.title}>
+          <img src={cateNav.image} alt="cateNavIcon" />
+          <h2>{cateNav.title}</h2>
+        </Flex.Item>
+      )}
     </Flex>
+  );
+}
+
+function RecommendRent() {
+  return (
+    <div className="recommend-rent">
+      <h2>
+        租房小组
+        <span className="more">更多</span>
+      </h2>
+      <Flex>
+        <Flex.Item>
+          家住回龙观
+        </Flex.Item>
+      </Flex>
+    </div>
   );
 }
 
