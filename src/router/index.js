@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { TabBar } from 'antd-mobile';
+import { TabBar, ActivityIndicator } from 'antd-mobile';
 import {
   BrowserRouter,
   Switch,
@@ -77,7 +77,7 @@ function RouterView() {
 function Router() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="route-loading">loading...</div>}>
+      <Suspense fallback={<ActivityIndicator className="router-loading" size="large" text="加载中..." />}>
         <RouterView />
         <RouterTabNav />
       </Suspense>
