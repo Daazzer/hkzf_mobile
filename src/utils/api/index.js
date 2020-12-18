@@ -1,5 +1,19 @@
 import home from './_home';
 
-export default {
+
+const {
+  getSwiper,
+  getGroups,
+  getNews
+} = home;
+
+const api = {
   ...home
 };
+
+export {
+  api as default,
+  getSwiper,
+  getGroups,
+  getNews
+}

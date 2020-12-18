@@ -17,8 +17,10 @@ const getGroups = data => http.get('/home/groups', data);
  */
 const getNews = data => http.get('/home/news', data);
 
-export default {
+const home = {
   getSwiper,
   getGroups,
   getNews
 }
+
+export default home;
