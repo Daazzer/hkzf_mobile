@@ -8,6 +8,7 @@ function Home() {
       <SearchBar />
       <Swiper />
       <CateNav />
+      <RecommendRent />
     </div>
   );
 }
@@ -98,14 +99,39 @@ function CateNav() {
 function RecommendRent() {
   return (
     <div className="recommend-rent">
-      <h2>
+      <h2 className="recommend-rent-title">
         租房小组
         <span className="more">更多</span>
       </h2>
-      <Flex>
-        <Flex.Item>
-          家住回龙观
-        </Flex.Item>
+      <Flex className="recommend-rent-list" wrap="wrap">
+        <div className="recommend-rent-list__item">
+          <div className="desc">
+            <h3>家住回龙观</h3>
+            <p>归属的感觉</p>
+          </div>
+          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
+        </div>
+        <div className="recommend-rent-list__item">
+          <div className="desc">
+            <h3>家住回龙观</h3>
+            <p>归属的感觉</p>
+          </div>
+          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
+        </div>
+        <div className="recommend-rent-list__item">
+          <div className="desc">
+            <h3>家住回龙观</h3>
+            <p>归属的感觉</p>
+          </div>
+          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
+        </div>
+        <div className="recommend-rent-list__item">
+          <div className="desc">
+            <h3>家住回龙观</h3>
+            <p>归属的感觉</p>
+          </div>
+          <img src="http://localhost:8080/img/groups/1.png" alt="recom" />
+        </div>
       </Flex>
     </div>
   );
