@@ -1,25 +1,84 @@
 import { Component } from 'react';
 import { Carousel, Flex, Toast, ActivityIndicator, Grid } from 'antd-mobile';
-import { getSwiper, getGroups, getNews } from '../../utils/api';
+import { getSwiper, getGroups, getNews, getAreaInfo } from '../../utils/api';
+import map from '../../utils/map';
 import './index.scss';
 
-function Home() {
-  return (
-    <div className="home">
-      <SearchBar />
-      <Swiper />
-      <CateNav />
-      <RecommendRent />
-      <News />
-    </div>
-  );
+class Home extends Component {
+  constructor() {
+    super();
+    this.state = {
+      city: {
+        name: '上海',
+        area: 'AREA|dbf46d32-7e76-1196'
+      }
+    };
+  }
+
+  async renderCityInfo() {
+    const location = await map.location();
+    const name = location.name;
+    const [err, res] = await getAreaInfo({ name });
+
+    if (err) {
+      Toast.fail('获取城市信息失败');
+      return;
+    }
+
+    const { label, value } = res.data.body;
+
+    const city = {
+      name: label,
+      area: value
+    };
+
+    this.setState({ city });
+  }
+
+  componentDidMount() {
+    this.renderCityInfo();
+  }
+
+  render() {
+    return (
+      <div className="home">
+        <SearchBar cityName={this.state.city.name} />
+        <Swiper />
+        <CateNav />
+        <RecommendRent area={this.state.city.area} />
+        <News area={this.state.city.area} />
+      </div>
+    );
+  }
+}
+
+class SearchBar extends Component {
+  render() {
+    const cityName = this.props.cityName;
+
+    return (
+      <Flex className="search-bar">
+        <Flex  className="search-bar__search">
+          <div className="city">
+            <span>{cityName}</span>
+            <i className="iconfont icon-arrow"></i>
+          </div>
+          <div className="address">
+            <i className="iconfont icon-seach"></i>
+            <span>请输入小区或地址</span>
+          </div>
+        </Flex>
+        <i className="search-bar__map iconfont icon-map"></i>
+      </Flex>
+    );
+  }
 }
 
 class Swiper extends Component {
   constructor() {
     super();
     this.state = {
-      carouselItems: [],
+      carouselItems: []
     };
     this.renderCarousel();
   }
@@ -65,24 +124,6 @@ class Swiper extends Component {
   }
 }
 
-function SearchBar() {
-  return (
-    <Flex className="search-bar">
-      <Flex  className="search-bar__search">
-        <div className="city">
-          <span>广州</span>
-          <i className="iconfont icon-arrow"></i>
-        </div>
-        <div className="address">
-          <i className="iconfont icon-seach"></i>
-          <span>请输入小区或地址</span>
-        </div>
-      </Flex>
-      <i className="search-bar__map iconfont icon-map"></i>
-    </Flex>
-  );
-}
-
 function CateNav() {
   const cateNavs = [
     {
@@ -125,9 +166,10 @@ class RecommendRent extends Component {
   }
 
   async renderRentItems() {
+    const area = this.props.area;
     this.setState({ loading: true });
     const [err, res] = await getGroups({
-      area: 'AREA|88cff55c-aaa4-e2e0'
+      area
     });
 
     if (err) {
@@ -201,8 +243,9 @@ class News extends Component {
   }
 
   async renderNewsItems() {
+    const area = this.props.area;
     this.setState({ loading: true });
-    const [err, res] = await getNews({ area: 'AREA|88cff55c-aaa4-e2e0' });
+    const [err, res] = await getNews({ area });
 
     if (err) {
       Toast.fail('获取最新资讯信息失败');
