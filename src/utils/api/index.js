@@ -1,6 +1,5 @@
 import home from './_home';
 
-
 const {
   getSwiper,
   getGroups,
