@@ -27,6 +27,7 @@ class Home extends Component {
       newsItems: [],
       loading: false
     };
+    this.handleToMap = this.handleToMap.bind(this);
   }
 
   async renderCityInfo() {
@@ -96,10 +97,14 @@ class Home extends Component {
     this.renderNewsItems();
   }
 
+  handleToMap() {
+    this.props.history.push('/map');
+  }
+
   render() {
     return (
       <div className="home">
-        <SearchBar cityName={this.state.city.name} />
+        <SearchBar cityName={this.state.city.name} onToMap={this.handleToMap} />
         <Swiper />
         <CateNav />
         <RecommendRent
@@ -131,7 +136,7 @@ class SearchBar extends Component {
             <span>请输入小区或地址</span>
           </div>
         </Flex>
-        <i className="search-bar__map iconfont icon-map"></i>
+        <i className="search-bar__map iconfont icon-map" onClick={this.props.onToMap}></i>
       </Flex>
     );
   }
