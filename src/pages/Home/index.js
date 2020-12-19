@@ -1,6 +1,17 @@
 import { Component } from 'react';
-import { Carousel, Flex, Toast, ActivityIndicator, Grid } from 'antd-mobile';
-import { getSwiper, getGroups, getNews, getAreaInfo } from '../../utils/api';
+import {
+  Carousel,
+  Flex,
+  Toast,
+  ActivityIndicator,
+  Grid
+} from 'antd-mobile';
+import {
+  getSwiper,
+  getGroups,
+  getNews,
+  getAreaInfo
+} from '../../utils/api';
 import map from '../../utils/map';
 import './index.scss';
 
@@ -11,7 +22,10 @@ class Home extends Component {
       city: {
         name: '上海',
         area: 'AREA|dbf46d32-7e76-1196'
-      }
+      },
+      rentItems: [],
+      newsItems: [],
+      loading: false
     };
   }
 
@@ -35,8 +49,51 @@ class Home extends Component {
     this.setState({ city });
   }
 
-  componentDidMount() {
-    this.renderCityInfo();
+  async renderRentItems() {
+    const area = this.state.city.area;
+    this.setState({ loading: true });
+    const [err, res] = await getGroups({
+      area
+    });
+
+    if (err) {
+      this.setState({ loading: false });
+      return Toast.fail('获取租房推荐列表信息失败');
+    }
+
+    const baseURL = res.config.baseURL;
+    const rentItems = res.data.body.map(rentItem => ({
+      ...rentItem,
+      imgSrc: baseURL + rentItem.imgSrc
+    }));
+    this.setState({ loading: false });
+    this.setState({ rentItems });
+  }
+
+  async renderNewsItems() {
+    const area = this.state.city.area;
+    this.setState({ loading: true });
+    const [err, res] = await getNews({ area });
+
+    if (err) {
+      Toast.fail('获取最新资讯信息失败');
+      this.setState({ loading: false });
+      return;
+    }
+
+    const baseURL = res.config.baseURL;
+    const newsItems = res.data.body.map(newsItem => ({
+      ...newsItem,
+      imgSrc: baseURL + newsItem.imgSrc
+    }));
+    this.setState({ newsItems });
+    this.setState({ loading: false });
+  }
+
+  async componentDidMount() {
+    await this.renderCityInfo();
+    this.renderRentItems();
+    this.renderNewsItems();
   }
 
   render() {
@@ -45,8 +102,14 @@ class Home extends Component {
         <SearchBar cityName={this.state.city.name} />
         <Swiper />
         <CateNav />
-        <RecommendRent area={this.state.city.area} />
-        <News area={this.state.city.area} />
+        <RecommendRent
+          rentItems={this.state.rentItems}
+          loading={this.state.loading}
+        />
+        <News
+          newsItems={this.state.newsItems}
+          loading={this.state.loading}
+        />
       </div>
     );
   }
@@ -157,44 +220,14 @@ function CateNav() {
 }
 
 class RecommendRent extends Component {
-  constructor() {
-    super();
-    this.state = {
-      rentItems: [],
-      loading: false
-    };
-  }
-
-  async renderRentItems() {
-    const area = this.props.area;
-    this.setState({ loading: true });
-    const [err, res] = await getGroups({
-      area
-    });
-
-    if (err) {
-      this.setState({ loading: false });
-      return Toast.fail('获取租房推荐列表信息失败');
-    }
-
-    const baseURL = res.config.baseURL;
-    const rentItems = res.data.body.map(rentItem => ({
-      ...rentItem,
-      imgSrc: baseURL + rentItem.imgSrc
-    }));
-    this.setState({ loading: false });
-    this.setState({ rentItems });
-  }
-
-  componentDidMount() {
-    this.renderRentItems();
-  }
-
   render() {
+    const rentItems = this.props.rentItems;
+    const loading = this.props.loading;
     let recommendRentList = null;
-    if (this.state.rentItems.length === 0 && !this.state.loading) {
+
+    if (rentItems.length === 0 && !loading) {
       recommendRentList = <div className="recommend-rent--none">暂无数据</div>;
-    } else if (this.state.loading) {
+    } else if (loading) {
       recommendRentList = (
         <div className="recommend-rent--loading">
           <ActivityIndicator text="加载中..." />
@@ -204,7 +237,7 @@ class RecommendRent extends Component {
       recommendRentList = (
         <Grid
           className="recommend-rent-list"
-          data={this.state.rentItems}
+          data={rentItems}
           square={false}
           hasLine={false}
           columnNum={2}
@@ -234,43 +267,14 @@ class RecommendRent extends Component {
 }
 
 class News extends Component {
-  constructor() {
-    super();
-    this.state = {
-      newsItems: [],
-      loading: false
-    };
-  }
-
-  async renderNewsItems() {
-    const area = this.props.area;
-    this.setState({ loading: true });
-    const [err, res] = await getNews({ area });
-
-    if (err) {
-      Toast.fail('获取最新资讯信息失败');
-      this.setState({ loading: false });
-      return;
-    }
-
-    const baseURL = res.config.baseURL;
-    const newsItems = res.data.body.map(newsItem => ({
-      ...newsItem,
-      imgSrc: baseURL + newsItem.imgSrc
-    }));
-    this.setState({ newsItems });
-    this.setState({ loading: false });
-  }
-
-  componentDidMount() {
-    this.renderNewsItems();
-  }
-
   render() {
+    const newsItems = this.props.newsItems;
+    const loading = this.props.loading;
     let newsList = null;
-    if (this.state.newsItems.length === 0 && !this.state.loading) {
+
+    if (newsItems.length === 0 && !loading) {
       newsList = <div className="news-list--none">暂无数据</div>;
-    } else if (this.state.loading) {
+    } else if (loading) {
       newsList = (
         <div className="news-list--loading">
           <ActivityIndicator text="加载中..." />
@@ -279,7 +283,7 @@ class News extends Component {
     } else {
       newsList = (
         <div className="news-list">
-          {this.state.newsItems.map(newsItem =>
+          {newsItems.map(newsItem =>
             <Flex className="news-list__item" align="start" key={newsItem.id}>
               <img src={newsItem.imgSrc} alt="news-pic" />
               <div className="desc">
