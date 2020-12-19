@@ -4,7 +4,6 @@ import http from '../http';
  * 获取子级城市列表
  * @param {Object} params 参数对象
  * @param {string} id 地区的code
- * @returns {Promise}
  */
 const getArea = params => http.get('/area', params);
 
@@ -12,7 +11,6 @@ const getArea = params => http.get('/area', params);
  * 获取城市列表数据
  * @param {Object} params 参数对象
  * @param {number} params.level 获取哪一级的城市，1 表示获取所有城市数据 2 表示城市下区的数据
- * @returns {Promise}
  */
 const getAreaCity = params => http.get('/area/city', params);
 
@@ -23,7 +21,6 @@ const getAreaHot = () => http.get('/area/hot');
  * 根据城市名称查询该城市信息
  * @param {Object} params 参数对象
  * @param {string} params.name 地区的name值
- * @returns {Promise}
  */
 const getAreaInfo = params => http.get('/area/info', params);
 
@@ -32,7 +29,6 @@ const getAreaInfo = params => http.get('/area/info', params);
  * @param {Object} params 参数对象
  * @param {string} params.name 关键词
  * @param {string} params.id 当前定位城市id
- * @returns {Promise}
  */
 const getAreaCommunity = params => http.get('/area/community', params);
 
@@ -40,7 +36,6 @@ const getAreaCommunity = params => http.get('/area/community', params);
  * 根据区域id，查询该区域的房源数据
  * @param {Object} params 参数对象
  * @param {string} params.id 区域的id
- * @returns {Promise}
  */
 const getAreaMap = params => http.get('/area/map', params);
 
