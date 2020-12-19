@@ -7,7 +7,14 @@ const {
   getNews
 } = home;
 
-const { getAreaInfo } = area;
+const {
+  getArea,
+  getAreaCity,
+  getAreaHot,
+  getAreaInfo,
+  getAreaCommunity,
+  getAreaMap
+} = area;
 
 const api = {
   ...home,
@@ -19,5 +26,10 @@ export {
   getSwiper,
   getGroups,
   getNews,
-  getAreaInfo
+  getArea,
+  getAreaCity,
+  getAreaHot,
+  getAreaInfo,
+  getAreaCommunity,
+  getAreaMap
 }
