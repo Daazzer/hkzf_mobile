@@ -147,7 +147,6 @@ export class Map extends Component {
       <div className="map">
         <div className="map-gl" id="mapGL"></div>
         <NavBar
-          style={{ position: 'fixed', width: '100%', top: 0 }}
           mode="light"
           icon={<i className="iconfont icon-back" style={{ color: '#333' }}></i>}
           onLeftClick={() => history.goBack()}
