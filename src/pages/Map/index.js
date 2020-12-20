@@ -6,7 +6,6 @@ export class Map extends Component {
   componentDidMount() {
     const map = new window.BMap.Map('mapGL');
     const point = new window.BMap.Point(116.404, 39.915);
-    const point1 = new window.BMap.Point(116.397, 39.715);
     map.centerAndZoom(point, 15);
     map.addControl(new window.BMap.NavigationControl());
     const opts = {
