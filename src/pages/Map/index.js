@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { NavBar, Toast } from 'antd-mobile';
 import myMap from '../../utils/map';
 import { getAreaInfo, getAreaMap } from '../../utils/api';
+import storage from '../../utils/storage';
 import './index.scss';
 
 export class Map extends Component {
@@ -19,11 +20,44 @@ export class Map extends Component {
     };
   }
 
-  async componentDidMount() {
-    await this.renderMap();
-    await this.renderAreaInfo();
-    await this.renderCityLevel();
-    this.renderLabel();
+  async getCityInfo(name) {
+    Toast.loading('获取城市信息中...');
+    const [err, res] = await getAreaInfo({ name });
+
+    if (err) {
+      Toast.hide();
+      Toast.fail('定位失败');
+      return;
+    }
+
+    Toast.hide();
+    return res.data.body;
+  }
+
+  /**
+   * 渲染地图并且设置地图中心点
+   * @param {string|Object} center
+   */
+  async renderMap(center) {
+    const map = new window.BMap.Map('mapGL');
+    map.centerAndZoom(center, 12);
+    map.addControl(new window.BMap.NavigationControl());
+    this.setState({ map });
+  }
+
+  async getLocation() {
+    Toast.loading('定位中...');
+    const location = await myMap.location();
+    const { name, center } = location;
+    Toast.hide();
+    return {
+      name,
+      center
+    };
+  }
+
+  getLocationByCityName() {
+
   }
 
   async handleLabelClick(city, name, id) {
@@ -37,50 +71,6 @@ export class Map extends Component {
     });
     await this.renderCityLevel();
     await this.renderLabel();
-  }
-
-  async getLocation() {
-    Toast.loading('定位中...');
-    const location = await myMap.location();
-    const { name, center } = location;
-    const city = this.state.city;
-    this.setState({
-      city: {
-        ...city,
-        name,
-        center
-      }
-    });
-    Toast.hide();
-  }
-
-  async renderAreaInfo() {
-    Toast.loading('获取城市信息中...');
-    const city = this.state.city;
-    const [err, res] = await getAreaInfo({ name: city.name });
-
-    if (err) {
-      Toast.hide();
-      Toast.fail('定位失败');
-      return;
-    }
-
-    const id = res.data.body.value;
-    this.setState({
-      city: {
-        ...city,
-        id
-      }
-    });
-    Toast.hide();
-  }
-
-  async renderMap() {
-    const map = new window.BMap.Map('mapGL');
-    this.setState({ map });
-    await this.getLocation();
-    map.centerAndZoom(this.state.city.center, 12);
-    map.addControl(new window.BMap.NavigationControl());
   }
 
   async renderCityLevel() {
@@ -140,6 +130,27 @@ export class Map extends Component {
     this.state.map.setViewport(positions);
   }
 
+  async componentDidMount() {
+    // 获取本地城市信息
+    let city = storage.getData('city');
+    let center = null;
+    if (!city) {
+      const location = await this.getLocation();
+      center = location.center;
+      city = await this.getCityInfo(location.name);
+      storage.setData('city', city);
+    } else {
+      center = city.label + '市';
+    }
+
+    this.renderMap(center);
+
+    // await this.renderMap();
+    // await this.renderAreaInfo();
+    // await this.renderCityLevel();
+    // this.renderLabel();
+  }
+
   render() {
     const history = this.props.history;
 
@@ -147,8 +158,9 @@ export class Map extends Component {
       <div className="map">
         <div className="map-gl" id="mapGL"></div>
         <NavBar
+          className="nav-header"
           mode="light"
-          icon={<i className="iconfont icon-back" style={{ color: '#333' }}></i>}
+          leftContent={<i className="iconfont icon-back"></i>}
           onLeftClick={() => history.goBack()}
         >地图找房</NavBar>
       </div>
