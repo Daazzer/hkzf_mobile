@@ -11,11 +11,11 @@ export class Map extends Component {
     this.state = {
       map: null,
       city: {
-        name: '',
-        id: '',
+        label: '',
+        value: '',
         center: null
       },
-      rentItems: [],
+      rentInfoItems: [],
       loading: false
     };
   }
@@ -56,26 +56,8 @@ export class Map extends Component {
     };
   }
 
-  getLocationByCityName() {
-
-  }
-
-  async handleLabelClick(city, name, id) {
-    this.state.map.clearOverlays();
-    this.setState({
-      city: {
-        ...city,
-        name,
-        id
-      }
-    });
-    await this.renderCityLevel();
-    await this.renderLabel();
-  }
-
-  async renderCityLevel() {
+  async renderRentInfoItems(id) {
     Toast.loading('获取租房信息中...');
-    const id = this.state.city.id;
     const [err, res] = await getAreaMap({ id });
 
     if (err) {
@@ -84,14 +66,13 @@ export class Map extends Component {
       return;
     }
 
-    const rentItems = res.data.body;
-    this.setState({ rentItems });
+    const rentInfoItems = res.data.body;
+    this.setState({ rentInfoItems });
     Toast.hide();
   }
 
-  renderLabel() {
+  renderLabels() {
     const positions = [];
-    // const labels = [];
     const labelStyle = {
       color: '#fff',
       borderRadius: '50%',
@@ -101,8 +82,8 @@ export class Map extends Component {
       width: '70px',
       backgroundColor: 'rgba(12, 181, 106, 0.8)'
     };
-    this.state.rentItems.forEach(rentItem => {
-      const { longitude, latitude } = rentItem.coord;
+    this.state.rentInfoItems.forEach(rentInfoItem => {
+      const { longitude, latitude } = rentInfoItem.coord;
       const position = new window.BMap.Point(longitude, latitude);
       const opts = {
         position,
@@ -110,16 +91,20 @@ export class Map extends Component {
       };
       const label = new window.BMap.Label(
         `<div class="map-bubble">
-          <p class="map-bubble__title">${rentItem.label}</p>
-          <p class="map-bubble__content">${rentItem.count}套</p>
+          <p class="map-bubble__title">${rentInfoItem.label}</p>
+          <p class="map-bubble__content">${rentInfoItem.count}套</p>
         </div>`,
         opts
       );
       label.addEventListener('click', () => {
+        // 解决清除地图覆盖物的 bug
+        setTimeout(() => {
+          this.state.map.clearOverlays();
+        });
         this.handleLabelClick(
           this.state.city,
-          rentItem.label,
-          rentItem.value
+          rentInfoItem.label,
+          rentInfoItem.value
         );
       });
       label.setStyle(labelStyle);
@@ -128,6 +113,18 @@ export class Map extends Component {
     });
 
     this.state.map.setViewport(positions);
+  }
+
+  async handleLabelClick(city, label, value) {
+    this.setState({
+      city: {
+        ...city,
+        label,
+        value
+      }
+    });
+    await this.renderRentInfoItems(value);
+    this.renderLabels();
   }
 
   async componentDidMount() {
@@ -143,12 +140,16 @@ export class Map extends Component {
       center = city.label + '市';
     }
 
-    this.renderMap(center);
+    this.setState({
+      city: {
+        ...city,
+        center
+      }
+    });
 
-    // await this.renderMap();
-    // await this.renderAreaInfo();
-    // await this.renderCityLevel();
-    // this.renderLabel();
+    await this.renderMap(center);
+    await this.renderRentInfoItems(city.value);
+    this.renderLabels();
   }
 
   render() {
