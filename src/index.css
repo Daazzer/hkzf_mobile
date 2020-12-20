@@ -12,6 +12,10 @@ body {
   background-color: #fff;
 }
 
+ul, ol {
+  list-style: none;
+}
+
 .tab-bar-nav {
   position: fixed;
   width: 100%;
