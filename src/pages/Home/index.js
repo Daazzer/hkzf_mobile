@@ -94,9 +94,10 @@ class Home extends Component {
       city = await this.getCity();
       storage.setData('city', city);
     }
-    this.setState({ city });
-    this.renderRentItems(this.state.city);
-    this.renderNewsItems(this.state.city);
+    this.setState({ city }, () => {
+      this.renderRentItems(this.state.city);
+      this.renderNewsItems(this.state.city);
+    });
   }
 
   handleToMap() {
