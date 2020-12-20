@@ -104,8 +104,8 @@ class Home extends Component {
   render() {
     return (
       <div className="home">
-        <SearchBar cityName={this.state.city.name} onToMap={this.handleToMap} />
         <Swiper />
+        <SearchBar cityName={this.state.city.name} onToMap={this.handleToMap} />
         <CateNav />
         <RecommendRent
           rentItems={this.state.rentItems}
