@@ -14,7 +14,8 @@ export class Map extends Component {
         id: '',
         center: null
       },
-      rentItems: []
+      rentItems: [],
+      loading: false
     };
   }
 
@@ -25,7 +26,21 @@ export class Map extends Component {
     this.renderLabel();
   }
 
+  async handleLabelClick(city, name, id) {
+    this.state.map.clearOverlays();
+    this.setState({
+      city: {
+        ...city,
+        name,
+        id
+      }
+    });
+    await this.renderCityLevel();
+    await this.renderLabel();
+  }
+
   async getLocation() {
+    Toast.loading('定位中...');
     const location = await myMap.location();
     const { name, center } = location;
     const city = this.state.city;
@@ -36,13 +51,16 @@ export class Map extends Component {
         center
       }
     });
+    Toast.hide();
   }
 
   async renderAreaInfo() {
+    Toast.loading('获取城市信息中...');
     const city = this.state.city;
     const [err, res] = await getAreaInfo({ name: city.name });
 
     if (err) {
+      Toast.hide();
       Toast.fail('定位失败');
       return;
     }
@@ -54,6 +72,7 @@ export class Map extends Component {
         id
       }
     });
+    Toast.hide();
   }
 
   async renderMap() {
@@ -65,16 +84,19 @@ export class Map extends Component {
   }
 
   async renderCityLevel() {
+    Toast.loading('获取租房信息中...');
     const id = this.state.city.id;
     const [err, res] = await getAreaMap({ id });
 
     if (err) {
-      Toast.fail('获取市级租房信息失败');
+      Toast.hide();
+      Toast.fail('获取租房信息失败');
       return;
     }
 
     const rentItems = res.data.body;
     this.setState({ rentItems });
+    Toast.hide();
   }
 
   renderLabel() {
@@ -103,6 +125,13 @@ export class Map extends Component {
         </div>`,
         opts
       );
+      label.addEventListener('click', () => {
+        this.handleLabelClick(
+          this.state.city,
+          rentItem.label,
+          rentItem.value
+        );
+      });
       label.setStyle(labelStyle);
       positions.push(position);
       this.state.map.addOverlay(label);
