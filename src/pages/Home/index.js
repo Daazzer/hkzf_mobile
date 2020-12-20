@@ -20,14 +20,15 @@ class Home extends Component {
     super();
     this.state = {
       city: {
-        name: '上海',
-        area: 'AREA|dbf46d32-7e76-1196'
+        name: '',
+        area: ''
       },
       rentItems: [],
       newsItems: [],
       loading: false
     };
     this.handleToMap = this.handleToMap.bind(this);
+    this.handleToCityList = this.handleToCityList.bind(this);
   }
 
   async renderCityInfo() {
@@ -101,11 +102,19 @@ class Home extends Component {
     this.props.history.push('/map');
   }
 
+  handleToCityList() {
+    this.props.history.push('/citylist');
+  }
+
   render() {
     return (
       <div className="home">
         <Swiper />
-        <SearchBar cityName={this.state.city.name} onToMap={this.handleToMap} />
+        <SearchBar
+          cityName={this.state.city.name}
+          onToMap={this.handleToMap}
+          onToCitylist={this.handleToCityList}
+        />
         <CateNav />
         <RecommendRent
           rentItems={this.state.rentItems}
@@ -127,7 +136,7 @@ class SearchBar extends Component {
     return (
       <Flex className="search-bar">
         <Flex  className="search-bar__search">
-          <div className="city">
+          <div className="city" onClick={this.props.onToCitylist}>
             <span>{cityName}</span>
             <i className="iconfont icon-arrow"></i>
           </div>
