@@ -40,6 +40,11 @@ const routes = [
     path: '/map',
     name: '地图',
     component: lazy(() => import('@/pages/Map'))
+  },
+  {
+    path: '/citylist',
+    name: '城市列表',
+    component: lazy(() => import('@/pages/CityList'))
   }
 ];
 
