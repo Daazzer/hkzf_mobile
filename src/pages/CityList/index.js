@@ -21,36 +21,45 @@ class CityList extends Component {
   }
 
   async getCityItems() {
+    Toast.loading('加载城市列表...');
     const [err, res] = await api.getAreaCity({ level: 1 });
 
     if (err) {
+      Toast.hide();
       Toast.fail('获取城市列表失败');
       return;
     }
 
+    Toast.hide();
     return res.data.body;
   }
 
   async getHotCityItems() {
+    Toast.loading('加载热门城市...');
     const [err, res] = await api.getAreaHot();
 
     if (err) {
+      Toast.hide();
       Toast.fail('获取热门城市信息失败');
       return;
     }
 
+    Toast.hide();
     return res.data.body;
   }
 
   async getLocationCity() {
+    Toast.loading('定位中...');
     const { name } = await map.location();
     const [err, res] = await api.getAreaInfo({ name });
 
     if (err) {
+      Toast.hide();
       Toast.fail('定位失败');
       return;
     }
 
+    Toast.hide();
     return res.data.body;
   }
 
