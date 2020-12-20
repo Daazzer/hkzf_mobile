@@ -109,7 +109,11 @@ class CityList extends Component {
               className="citylist-list__item"
               key={cityItem.value}
               onClick={() => {
-                storage.setData('city', cityItem);
+                const { label, value } = cityItem;
+                storage.setData('city', {
+                  label,
+                  value
+                });
                 this.props.history.push('/');
               }}
             >{cityItem.label}</List.Item>
