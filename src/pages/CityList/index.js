@@ -15,6 +15,7 @@ class CityList extends Component {
     };
     this.rowRenderer = this.rowRenderer.bind(this);
     this.getRowHeight = this.getRowHeight.bind(this);
+    this.onRowsRendered = this.onRowsRendered.bind(this);
     this.vListRef = createRef();
   }
 
@@ -97,6 +98,7 @@ class CityList extends Component {
             <List.Item
               className="citylist-list__item"
               key={cityItem.value}
+              onClick={() => this.props.history.push('/')}
             >{cityItem.label}</List.Item>
           )}
         </List>
@@ -110,6 +112,14 @@ class CityList extends Component {
     const cityItems = cities[firstLetter];
 
     return 36 + 50 * cityItems.length;
+  }
+
+  onRowsRendered({ startIndex }) {
+    if (this.state.curIndex !== startIndex) {
+      this.setState({
+        curIndex: startIndex
+      });
+    }
   }
 
   async componentDidMount() {
@@ -160,6 +170,7 @@ class CityList extends Component {
               rowCount={this.state.cityIndexes.length}
               rowHeight={this.getRowHeight}
               rowRenderer={this.rowRenderer}
+              onRowsRendered={this.onRowsRendered}
               scrollToAlignment="start"
             />
           }
