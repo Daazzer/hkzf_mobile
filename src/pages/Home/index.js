@@ -21,8 +21,8 @@ class Home extends Component {
     super();
     this.state = {
       city: {
-        name: '',
-        area: ''
+        label: '',
+        value: ''
       },
       rentItems: [],
       newsItems: [],
@@ -42,18 +42,13 @@ class Home extends Component {
       return;
     }
 
-    const { label, value } = res.data.body;
-
-    const city = {
-      name: label,
-      area: value
-    };
+    const city = res.data.body;
 
     return city;
   }
 
   async renderRentItems(city) {
-    const area = city.area;
+    const area = city.value;
     this.setState({ loading: true });
     const [err, res] = await getGroups({
       area
@@ -74,7 +69,7 @@ class Home extends Component {
   }
 
   async renderNewsItems(city) {
-    const area = city.area;
+    const area = city.value;
     this.setState({ loading: true });
     const [err, res] = await getNews({ area });
 
@@ -117,7 +112,7 @@ class Home extends Component {
       <div className="home">
         <Swiper />
         <SearchBar
-          cityName={this.state.city.name}
+          cityName={this.state.city.label}
           onToMap={this.handleToMap}
           onToCitylist={this.handleToCityList}
         />
