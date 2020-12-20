@@ -194,7 +194,7 @@ class Swiper extends Component {
             key={carouselItem.id}
             src={carouselItem.imgSrc}
             alt={carouselItem.alt}
-            style={{ width: '100%', verticalAlign: 'top' }}
+            style={{ width: '100%', verticalAlign: 'top', minHeight: 176 }}
             onLoad={() => window.dispatchEvent(new Event('resize'))}
           />
         ))}
