@@ -13,6 +13,7 @@ import {
   getAreaInfo
 } from '../../utils/api';
 import map from '../../utils/map';
+import storage from '../../utils/storage';
 import './index.scss';
 
 class Home extends Component {
@@ -31,7 +32,7 @@ class Home extends Component {
     this.handleToCityList = this.handleToCityList.bind(this);
   }
 
-  async renderCityInfo() {
+  async getCity() {
     const location = await map.location();
     const name = location.name;
     const [err, res] = await getAreaInfo({ name });
@@ -48,11 +49,11 @@ class Home extends Component {
       area: value
     };
 
-    this.setState({ city });
+    return city;
   }
 
-  async renderRentItems() {
-    const area = this.state.city.area;
+  async renderRentItems(city) {
+    const area = city.area;
     this.setState({ loading: true });
     const [err, res] = await getGroups({
       area
@@ -72,8 +73,8 @@ class Home extends Component {
     this.setState({ rentItems });
   }
 
-  async renderNewsItems() {
-    const area = this.state.city.area;
+  async renderNewsItems(city) {
+    const area = city.area;
     this.setState({ loading: true });
     const [err, res] = await getNews({ area });
 
@@ -93,9 +94,14 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    await this.renderCityInfo();
-    this.renderRentItems();
-    this.renderNewsItems();
+    let city = storage.getData('city');
+    if (!city) {
+      city = await this.getCity();
+      storage.setData('city', city);
+    }
+    this.setState({ city });
+    this.renderRentItems(this.state.city);
+    this.renderNewsItems(this.state.city);
   }
 
   handleToMap() {
