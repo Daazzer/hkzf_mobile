@@ -1,20 +1,22 @@
 import { Component } from 'react';
 import { NavBar, Toast, List } from 'antd-mobile';
 import api from '../../utils/api';
-import './index.scss';
+import map from '../../utils/map';
 import { List as VList, AutoSizer } from 'react-virtualized';
+import './index.scss';
 
 class CityList extends Component {
   constructor() {
     super();
     this.state = {
       cities: {},
-      cityIndexItems: []
+      cityIndexes: []
     };
     this.rowRenderer = this.rowRenderer.bind(this);
+    this.getRowHeight = this.getRowHeight.bind(this);
   }
 
-  async renderCityItems() {
+  async getCityItems() {
     const [err, res] = await api.getAreaCity({ level: 1 });
 
     if (err) {
@@ -22,11 +24,30 @@ class CityList extends Component {
       return;
     }
 
-    const cityItems = res.data.body;
+    return res.data.body;
+  }
 
-    const { cities, cityIndexItems } = this.formatCityData(cityItems);
+  async getHotCityItems() {
+    const [err, res] = await api.getAreaHot();
 
-    this.setState({ cities, cityIndexItems });
+    if (err) {
+      Toast.fail('获取热门城市信息失败');
+      return;
+    }
+
+    return res.data.body;
+  }
+
+  async getLocationCity() {
+    const { name } = await map.location();
+    const [err, res] = await api.getAreaInfo({ name });
+
+    if (err) {
+      Toast.fail('定位失败');
+      return;
+    }
+
+    return res.data.body;
   }
 
   formatCityData(cityItems) {
@@ -39,29 +60,65 @@ class CityList extends Component {
         cities[firstLetter] = [cityItem];
       }
     });
-    const cityIndexItems = Object.keys(cities).sort();
-    cityIndexItems.unshift('#', '热');
+    const cityIndexes = Object.keys(cities).sort();
     return {
-      cityIndexItems,
+      cityIndexes,
       cities
     }
   }
 
-  componentDidMount() {
-    this.renderCityItems();
-  }
+  rowRenderer({ key, index, style }) {
+    const { cities, cityIndexes } = this.state;
+    const firstLetter = cityIndexes[index];
+    const cityItems = cities[firstLetter];
+    let label = '';
 
-  rowRenderer(row) {
+    switch (firstLetter) {
+      case '#':
+        label = '当前定位';
+        break;
+      case 'hot':
+        label = '热门城市';
+        break;
+      default:
+        label = firstLetter;
+        break;
+    }
+
     return (
       <div
-        key={row.key}
-        style={row.style}
+        key={key}
+        style={style}
       >
-        <List renderHeader={() => 'Basic Style'} className="my-list">
-          <List.Item>Title</List.Item>
+        <List renderHeader={() => label} className="my-list">
+          {cityItems.map(cityItem =>
+            <List.Item key={cityItem.value}>{cityItem.label}</List.Item>
+          )}
         </List>
       </div>
     );
+  }
+
+  getRowHeight({ index }) {
+    const { cities, cityIndexes } = this.state;
+    const firstLetter = cityIndexes[index];
+    const cityItems = cities[firstLetter];
+
+    return 36 + 50 * cityItems.length;
+  }
+
+  async componentDidMount() {
+    const cityItems = await this.getCityItems();
+    const hotCityItems = await this.getHotCityItems();
+    const locationCity = await this.getLocationCity();
+    const { cities, cityIndexes } = this.formatCityData(cityItems);
+    cityIndexes.unshift('#', 'hot');
+    cities.hot = hotCityItems;
+    cities['#'] = [locationCity];
+    this.setState({
+      cities,
+      cityIndexes
+    });
   }
 
   render() {
@@ -73,13 +130,17 @@ class CityList extends Component {
           leftContent={<i className="iconfont icon-back"></i>}
           onLeftClick={() => this.props.history.goBack()}
         >城市选择</NavBar>
-        {/* <VList
-          height={300}
-          rowCount={this.state.list.length}
-          rowHeight={100}
-          width={300}
-          rowRenderer={this.rowRenderer}
-        /> */}
+        <AutoSizer>
+          {({ width, height }) =>
+            <VList
+              width={width}
+              height={height}
+              rowCount={this.state.cityIndexes.length}
+              rowHeight={this.getRowHeight}
+              rowRenderer={this.rowRenderer}
+            />
+          }
+        </AutoSizer>
       </div>
     );
   }
