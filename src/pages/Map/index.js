@@ -10,6 +10,7 @@ export class Map extends Component {
     super();
     this.state = {
       map: null,
+      mapLevel: 1,
       city: {
         label: '',
         value: '',
@@ -97,10 +98,6 @@ export class Map extends Component {
         opts
       );
       label.addEventListener('click', () => {
-        // 解决清除地图覆盖物的 bug
-        setTimeout(() => {
-          this.state.map.clearOverlays();
-        });
         this.handleLabelClick(
           this.state.city,
           rentInfoItem.label,
@@ -116,12 +113,21 @@ export class Map extends Component {
   }
 
   async handleLabelClick(city, label, value) {
+    let mapLevel = this.state.mapLevel;
+    if (mapLevel >= 3) {
+      return;
+    }
+    // 解决清除地图覆盖物的 bug
+    setTimeout(() => {
+      this.state.map.clearOverlays();
+    });
     this.setState({
       city: {
         ...city,
         label,
         value
-      }
+      },
+      mapLevel: ++mapLevel
     });
     await this.renderRentInfoItems(value);
     this.renderLabels();
