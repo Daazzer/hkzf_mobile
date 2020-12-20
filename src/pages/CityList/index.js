@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import { NavBar, Toast, List } from 'antd-mobile';
 import api from '../../utils/api';
 import map from '../../utils/map';
@@ -10,10 +10,12 @@ class CityList extends Component {
     super();
     this.state = {
       cities: {},
-      cityIndexes: []
+      cityIndexes: [],
+      curIndex: 0
     };
     this.rowRenderer = this.rowRenderer.bind(this);
     this.getRowHeight = this.getRowHeight.bind(this);
+    this.vListRef = createRef();
   }
 
   async getCityItems() {
@@ -77,7 +79,7 @@ class CityList extends Component {
       case '#':
         label = '当前定位';
         break;
-      case 'hot':
+      case 'Hot':
         label = '热门城市';
         break;
       default:
@@ -90,9 +92,12 @@ class CityList extends Component {
         key={key}
         style={style}
       >
-        <List renderHeader={() => label} className="my-list">
+        <List renderHeader={label} className="citylist-list">
           {cityItems.map(cityItem =>
-            <List.Item key={cityItem.value}>{cityItem.label}</List.Item>
+            <List.Item
+              className="citylist-list__item"
+              key={cityItem.value}
+            >{cityItem.label}</List.Item>
           )}
         </List>
       </div>
@@ -112,13 +117,14 @@ class CityList extends Component {
     const hotCityItems = await this.getHotCityItems();
     const locationCity = await this.getLocationCity();
     const { cities, cityIndexes } = this.formatCityData(cityItems);
-    cityIndexes.unshift('#', 'hot');
-    cities.hot = hotCityItems;
+    cityIndexes.unshift('#', 'Hot');
+    cities.Hot = hotCityItems;
     cities['#'] = [locationCity];
     this.setState({
       cities,
       cityIndexes
     });
+    this.vListRef.current.measureAllRows()
   }
 
   render() {
@@ -130,14 +136,31 @@ class CityList extends Component {
           leftContent={<i className="iconfont icon-back"></i>}
           onLeftClick={() => this.props.history.goBack()}
         >城市选择</NavBar>
+        <ul className="citylist-index">
+          {this.state.cityIndexes.map((cityIndex, index) =>
+            <li
+              className={`citylist-index__item ${this.state.curIndex === index ? 'active' : ''}`}
+              onClick={() => {
+                this.vListRef.current.scrollToRow(index);
+                this.setState({
+                  curIndex: index
+                });
+              }}
+            >
+              {cityIndex === 'Hot' ? '热' : cityIndex}
+            </li>
+          )}
+        </ul>
         <AutoSizer>
           {({ width, height }) =>
             <VList
+              ref={this.vListRef}
               width={width}
               height={height}
               rowCount={this.state.cityIndexes.length}
               rowHeight={this.getRowHeight}
               rowRenderer={this.rowRenderer}
+              scrollToAlignment="start"
             />
           }
         </AutoSizer>
