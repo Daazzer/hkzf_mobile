@@ -3,6 +3,7 @@ import { NavBar, Toast, List } from 'antd-mobile';
 import { List as VList, AutoSizer } from 'react-virtualized';
 import api from '../../utils/api';
 import map from '../../utils/map';
+import storage from '../../utils/storage';
 import './index.scss';
 
 class CityList extends Component {
@@ -98,7 +99,10 @@ class CityList extends Component {
             <List.Item
               className="citylist-list__item"
               key={cityItem.value}
-              onClick={() => this.props.history.push('/')}
+              onClick={() => {
+                storage.setData('city', cityItem);
+                this.props.history.push('/');
+              }}
             >{cityItem.label}</List.Item>
           )}
         </List>
@@ -125,7 +129,11 @@ class CityList extends Component {
   async componentDidMount() {
     const cityItems = await this.getCityItems();
     const hotCityItems = await this.getHotCityItems();
-    const locationCity = await this.getLocationCity();
+    let locationCity = storage.getData('city');
+    if (!locationCity) {
+      locationCity = await this.getLocationCity();
+      storage.setData('city', locationCity);
+    }
     const { cities, cityIndexes } = this.formatCityData(cityItems);
     cityIndexes.unshift('#', 'Hot');
     cities.Hot = hotCityItems;
@@ -149,6 +157,7 @@ class CityList extends Component {
         <ul className="citylist-index">
           {this.state.cityIndexes.map((cityIndex, index) =>
             <li
+              key={cityIndex}
               className={`citylist-index__item ${this.state.curIndex === index ? 'active' : ''}`}
               onClick={() => {
                 this.vListRef.current.scrollToRow(index);
