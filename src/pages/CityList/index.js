@@ -1,8 +1,8 @@
 import { Component, createRef } from 'react';
 import { NavBar, Toast, List } from 'antd-mobile';
+import { List as VList, AutoSizer } from 'react-virtualized';
 import api from '../../utils/api';
 import map from '../../utils/map';
-import { List as VList, AutoSizer } from 'react-virtualized';
 import './index.scss';
 
 class CityList extends Component {
@@ -134,7 +134,7 @@ class CityList extends Component {
       cities,
       cityIndexes
     });
-    this.vListRef.current.measureAllRows()
+    this.vListRef.current.measureAllRows();
   }
 
   render() {
