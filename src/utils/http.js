@@ -1,13 +1,9 @@
 import axios from 'axios';
 
-/**
- * http 请求
- * @see 线上地址 {@link http://157.122.54.189:9060}
- * @see 本地地址 {@link http://localhost:8080}
- */
-
 const http = {
-  baseURL: 'http://157.122.54.189:9060',
+  get request() {
+    return axios.create({ baseURL: process.env.REACT_APP_URL })
+  },
 
   /**
    * 集中处理响应
@@ -24,8 +20,7 @@ const http = {
    * @returns {Promise}
    */
   get(url, params) {
-    return this.responseHandle(axios.get(url, {
-      baseURL: this.baseURL,
+    return this.responseHandle(this.request.get(url, {
       params
     }));
   },
@@ -37,9 +32,7 @@ const http = {
    * @returns {Promise}
    */
   post(url, data) {
-    return this.responseHandle(axios.post(url, data, {
-      baseURL: this.baseURL
-    }));
+    return this.responseHandle(this.request.post(url, data));
   }
 };
 
