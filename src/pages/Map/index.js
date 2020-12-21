@@ -74,15 +74,46 @@ export class Map extends Component {
 
   renderLabels() {
     const positions = [];
-    const labelStyle = {
-      color: '#fff',
-      borderRadius: '50%',
-      border: '2px solid #fff',
-      fontSize: '12px',
-      height: '70px',
-      width: '70px',
-      backgroundColor: 'rgba(12, 181, 106, 0.8)'
-    };
+    let labelStyle = null;
+    let labelContent = '';
+    let handleLabelClick = null;
+    if (this.state.mapLevel < 3) {
+      labelContent = (title, count) => `
+        <div class="map-bubble">
+          <p class="map-bubble__title">${title}</p>
+          <p class="map-bubble__content">${count}套</p>
+        </div>`;
+      labelStyle = {
+        color: '#fff',
+        borderRadius: '50%',
+        border: '2px solid #fff',
+        fontSize: '12px',
+        height: '70px',
+        width: '70px',
+        backgroundColor: 'rgba(12, 181, 106, 0.8)'
+      };
+      handleLabelClick = this.renderAreaLabel.bind(this);
+    } else {
+      labelContent = (title, count) => `
+        <div class="map-rect">
+          <div class="map-rect-wrapper">
+            <p class="map-rect__title">${title}</p>
+            <p class="map-rect__content">${count}套</p>
+          </div>
+          <i class="map-rect__arrow"></i>
+        </div>`;
+      labelStyle = {
+        color: '#fff',
+        borderRadius: '3px',
+        border: 'none',
+        fontSize: '12px',
+        height: '20px',
+        width: '100px',
+        backgroundColor: 'rgba(12, 181, 106, 0.8)'
+      };
+      handleLabelClick = this.showRentInfo.bind(this);
+      this.state.map.addControl(new window.BMap.ScaleControl());
+    }
     this.state.rentInfoItems.forEach(rentInfoItem => {
       const { longitude, latitude } = rentInfoItem.coord;
       const position = new window.BMap.Point(longitude, latitude);
@@ -90,20 +121,8 @@ export class Map extends Component {
         position,
         offset: new window.BMap.Size(-35, -35)
       };
-      const label = new window.BMap.Label(
-        `<div class="map-bubble">
-          <p class="map-bubble__title">${rentInfoItem.label}</p>
-          <p class="map-bubble__content">${rentInfoItem.count}套</p>
-        </div>`,
-        opts
-      );
-      label.addEventListener('click', () => {
-        this.handleLabelClick(
-          this.state.city,
-          rentInfoItem.label,
-          rentInfoItem.value
-        );
-      });
+      const label = new window.BMap.Label(labelContent(rentInfoItem.label, rentInfoItem.count), opts);
+      label.addEventListener('click', () => handleLabelClick(rentInfoItem.label, rentInfoItem.value));
       label.setStyle(labelStyle);
       positions.push(position);
       this.state.map.addOverlay(label);
@@ -112,15 +131,14 @@ export class Map extends Component {
     this.state.map.setViewport(positions);
   }
 
-  async handleLabelClick(city, label, value) {
+  async renderAreaLabel(label, value) {
+    const city = this.state.city;
     let mapLevel = this.state.mapLevel;
-    if (mapLevel >= 3) {
-      return;
-    }
     // 解决清除地图覆盖物的 bug
     setTimeout(() => {
       this.state.map.clearOverlays();
     });
+    // 设置当前地区中心
     this.setState({
       city: {
         ...city,
@@ -131,6 +149,10 @@ export class Map extends Component {
     });
     await this.renderRentInfoItems(value);
     this.renderLabels();
+  }
+
+  async showRentInfo() {
+    console.log(this);
   }
 
   async componentDidMount() {

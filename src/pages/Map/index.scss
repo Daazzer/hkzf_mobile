@@ -14,4 +14,27 @@
       margin-bottom: 5px;
     }
   }
+  &-rect {
+    position: relative;
+    &-wrapper {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 3px;
+    }
+    &__title {
+      width: 70px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    &__arrow {
+      position: absolute;
+      left: 50%;
+      bottom: -23px;
+      height: 20px;
+      transform: translate(-50%);
+      border: 4px solid transparent;
+      border-top-color: #00a75b;
+    }
+  }
 }
