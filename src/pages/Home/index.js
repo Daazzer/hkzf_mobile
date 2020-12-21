@@ -190,13 +190,14 @@ class Swiper extends Component {
         autoplayInterval={5000}
       >
         {this.state.carouselItems.map(carouselItem => (
-          <img
-            key={carouselItem.id}
-            src={carouselItem.imgSrc}
-            alt={carouselItem.alt}
-            style={{ width: '100%', verticalAlign: 'top', minHeight: 176 }}
-            onLoad={() => window.dispatchEvent(new Event('resize'))}
-          />
+          <a key={carouselItem.id} href="https://lianjia.com" style={{ display: 'inline-block', minHeight: 176 }}>
+            <img
+              src={carouselItem.imgSrc}
+              alt={carouselItem.alt}
+              style={{ width: '100%', verticalAlign: 'top' }}
+              onLoad={() => window.dispatchEvent(new Event('resize'))}
+            />
+          </a>
         ))}
       </Carousel>
     );
