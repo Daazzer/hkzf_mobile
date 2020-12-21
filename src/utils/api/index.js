@@ -1,5 +1,6 @@
 import home from './_home';
 import area from './_area';
+import houses from './_houses';
 
 const {
   getSwiper,
@@ -16,9 +17,14 @@ const {
   getAreaMap
 } = area;
 
+const {
+  getHouses
+} = houses;
+
 const api = {
   ...home,
-  ...area
+  ...area,
+  ...houses
 };
 
 export {
@@ -31,5 +37,6 @@ export {
   getAreaHot,
   getAreaInfo,
   getAreaCommunity,
-  getAreaMap
+  getAreaMap,
+  getHouses
 }
