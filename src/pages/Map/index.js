@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { NavBar, Toast } from 'antd-mobile';
 import myMap from '../../utils/map';
-import { getAreaInfo, getAreaMap } from '../../utils/api';
+import { getAreaInfo, getAreaMap, getHouses } from '../../utils/api';
 import storage from '../../utils/storage';
 import './index.scss';
 
@@ -14,9 +14,11 @@ export class Map extends Component {
       city: {
         label: '',
         value: '',
-        center: null
+        center: null,
       },
       rentInfoItems: [],
+      houseInfoItems: [],
+      isShowRentInfo: false,
       loading: false
     };
   }
@@ -113,6 +115,9 @@ export class Map extends Component {
       };
       handleLabelClick = this.showRentInfo.bind(this);
       this.state.map.addControl(new window.BMap.ScaleControl());
+      this.state.map.addEventListener('movestart', () => {
+        this.setState({ isShowRentInfo: false });
+      });
     }
     this.state.rentInfoItems.forEach(rentInfoItem => {
       const { longitude, latitude } = rentInfoItem.coord;
@@ -122,7 +127,7 @@ export class Map extends Component {
         offset: new window.BMap.Size(-35, -35)
       };
       const label = new window.BMap.Label(labelContent(rentInfoItem.label, rentInfoItem.count), opts);
-      label.addEventListener('click', () => handleLabelClick(rentInfoItem.label, rentInfoItem.value));
+      label.addEventListener('click', e => handleLabelClick(rentInfoItem, e));
       label.setStyle(labelStyle);
       positions.push(position);
       this.state.map.addOverlay(label);
@@ -131,7 +136,7 @@ export class Map extends Component {
     this.state.map.setViewport(positions);
   }
 
-  async renderAreaLabel(label, value) {
+  async renderAreaLabel({ label, value }) {
     const city = this.state.city;
     let mapLevel = this.state.mapLevel;
     // 解决清除地图覆盖物的 bug
@@ -151,8 +156,43 @@ export class Map extends Component {
     this.renderLabels();
   }
 
-  async showRentInfo() {
-    console.log(this);
+  async showRentInfo({ value }, e) {
+    const { clientX, clientY } = e.changedTouches[0];
+    const X = window.innerWidth / 2 - clientX;
+    const Y = (window.innerHeight - 330) / 2 - clientY;
+
+    this.state.map.panBy(X, Y);
+    this.renderHouseInfoItems(value);
+  }
+
+  async renderHouseInfoItems(cityId) {
+    if (this.state.loading) {
+      return;
+    }
+    Toast.loading('获取租房信息中...');
+    this.setState({
+      loading: true,
+      isShowRentInfo: false
+    });
+    const [err, res] = await getHouses({ cityId });
+
+    if (err) {
+      Toast.hide();
+      this.setState({ loading: false });
+      Toast.fail('获取租房信息失败');
+      return;
+    }
+
+    Toast.hide();
+    const houseInfoItems = res.data.body.list.map(houseInfoItem => ({
+      ...houseInfoItem,
+      houseImg: res.config.baseURL + houseInfoItem.houseImg
+    }));
+    this.setState({
+      loading: false,
+      isShowRentInfo: true,
+      houseInfoItems
+    });
   }
 
   async componentDidMount() {
@@ -192,7 +232,10 @@ export class Map extends Component {
           leftContent={<i className="iconfont icon-back"></i>}
           onLeftClick={() => history.goBack()}
         >地图找房</NavBar>
-        <HouseInfo />
+        <HouseInfo
+          active={this.state.isShowRentInfo}
+          houseInfoItems={this.state.houseInfoItems}
+        />
       </div>
     );
   }
@@ -200,28 +243,42 @@ export class Map extends Component {
 
 class HouseInfo extends Component {
   render() {
+    const active = this.props.active;
+    const houseInfoItems = this.props.houseInfoItems;
     return (
-      <div className="house-info active">
+      <div className={`house-info ${active ? 'active' : ''}`}>
         <div className="house-info-head">
           <h2>房屋列表</h2>
           <span className="more">更多房源</span>
         </div>
         <ul className="house-info-list">
-          <li className="house-info-list__item">
-            <img src="http://localhost:8080/newImg/7bjljjebh.jpg" alt="house info" />
-            <div className="info-content">
-              <h3>时尚街区西区 1室1厅 4200元</h3>
-              <p className="info-content__desc">一室/95/南/时尚街区西区</p>
-              <div className="info-content__tags">
-                <span className="tag tag1">近地铁</span>
-                <span className="tag tag2">集中供暖</span>
-                <span className="tag tag3">随时看房</span>
-              </div>
-              <p className="info-content__price">
-                <strong>4200</strong>元/月
-              </p>
-            </div>
-          </li>
+          {houseInfoItems.map(houseInfoItem => {
+            const tags = houseInfoItem.tags;
+            let infoContentTags = null
+
+            if (tags.length > 0) {
+              infoContentTags = (
+                <div className="info-content__tags">
+                  {tags.map((tag, i) =>
+                    <span key={tag} className={`tag tag${i+1}`}>{tag}</span>
+                  )}
+                </div>
+              );
+            }
+            return (
+              <li className="house-info-list__item" key={houseInfoItem.houseCode}>
+                <img src={houseInfoItem.houseImg} alt="house info" />
+                <div className="info-content">
+                  <h3>{houseInfoItem.title}</h3>
+                  <p className="info-content__desc">{houseInfoItem.desc}</p>
+                  {infoContentTags}
+                  <p className="info-content__price">
+                    <strong>4200</strong>元/月
+                  </p>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     );
