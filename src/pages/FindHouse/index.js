@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { NavBar, Toast } from 'antd-mobile';
 import SearchBar from '../../components/SearchBar';
+import Filter from '../../components/FindHouse/Filter';
 import api from '../../utils/api';
 import map from '../../utils/map';
 import storage from '../../utils/storage';
@@ -52,6 +53,7 @@ export class FindHouse extends Component {
         >
           <SearchBar mapIconColor="#00ae66" cityName={this.state.city.label} />
         </NavBar>
+        <Filter />
       </div>
     );
   }
