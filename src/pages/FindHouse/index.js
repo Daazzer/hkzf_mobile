@@ -1,8 +1,14 @@
 import { Component } from 'react';
 import { NavBar, Toast } from 'antd-mobile';
+import {
+  WindowScroller,
+  AutoSizer,
+  List,
+  InfiniteLoader
+} from 'react-virtualized';
 import SearchBar from '../../components/SearchBar';
 import Filter from '../../components/FindHouse/Filter';
-import HouseInfoList from '../../components/HouseInfoList';
+import HouseInfoItem from '../../components/HouseInfoItem';
 import api from '../../utils/api';
 import map from '../../utils/map';
 import storage from '../../utils/storage';
@@ -16,7 +22,7 @@ export class FindHouse extends Component {
         label: '',
         value: ''
       },
-      start: 1,
+      count: 0,
       houseInfoItems: []
     };
   }
@@ -34,6 +40,14 @@ export class FindHouse extends Component {
     const city = res.data.body;
 
     return city;
+  }
+
+  isRowLoaded({ index }) {
+    return !!this.state.houseInfoItems[index];
+  }
+
+  loadMoreRows({ startIndex, stopIndex }) {
+    console.log(startIndex, stopIndex);
   }
 
   async renderHouseInfoItems(cityId) {
@@ -61,7 +75,64 @@ export class FindHouse extends Component {
         houseImg
       }
     });
-    this.setState({ houseInfoItems })
+    const count = res.data.body.count;
+    this.setState({ houseInfoItems, count })
+  }
+
+  renderHouseList({ key, index, style }) {
+    const houseInfoItem = this.state.houseInfoItems[index];
+
+    return (
+      <HouseInfoItem
+        key={key}
+        style={style}
+        title={houseInfoItem.title}
+        houseCode={houseInfoItem.houseCode}
+        houseImg={houseInfoItem.houseImg}
+        desc={houseInfoItem.desc}
+        tags={houseInfoItem.tags}
+        price={houseInfoItem.price}
+      />
+    );
+  }
+
+  get renderList() {
+    const count = this.state.count;  // 列表总条数
+
+    if (count === 0) {
+      return <div>暂无数据</div>;
+    }
+
+    return (
+      <InfiniteLoader
+        isRowLoaded={this.isRowLoaded.bind(this)}
+        loadMoreRows={this.loadMoreRows.bind(this)}
+        rowCount={count}
+      >
+        {({ onRowsRendered, registerChild }) =>
+          <WindowScroller>
+            {({ height, isScrolling, scrollTop }) =>
+              <AutoSizer>
+                {({ width }) =>
+                  <List
+                    onRowsRendered={onRowsRendered}
+                    ref={registerChild}
+                    autoHeight
+                    width={width}
+                    height={height}
+                    rowCount={count}
+                    rowHeight={120}
+                    rowRenderer={this.renderHouseList.bind(this)}
+                    isScrolling={isScrolling}
+                    scrollTop={scrollTop}
+                  />
+                }
+              </AutoSizer>
+            }
+          </WindowScroller>
+        }
+      </InfiniteLoader>
+    );
   }
 
   async componentDidMount() {
@@ -70,6 +141,7 @@ export class FindHouse extends Component {
       city = await this.getCity();
       storage.setData('city', city);
     }
+
     this.setState({ city });
     this.renderHouseInfoItems(city.value);
   }
@@ -86,7 +158,9 @@ export class FindHouse extends Component {
           <SearchBar mapIconColor="#00ae66" cityName={this.state.city.label} />
         </NavBar>
         <Filter />
-        <HouseInfoList houseInfoItems={this.state.houseInfoItems} />
+        <div className="findhouse-house-list">
+          {this.renderList}
+        </div>
       </div>
     );
   }
