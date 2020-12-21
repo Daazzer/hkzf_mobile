@@ -27,8 +27,6 @@ ul, ol {
 }
 
 .am-navbar.nav-header {
-  position: fixed;
-  top: 0;
   width: 100%;
   color: #333;
   background-color: #f6f5f6;
