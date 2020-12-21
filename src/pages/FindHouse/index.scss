@@ -1,5 +1,4 @@
 .findhouse {
-  padding-top: 45px;
   .nav-header {
     color: #999;
     padding: 0 10px;
@@ -14,5 +13,8 @@
       flex: none;
       margin: 0;
     }
+  }
+  .house-info-list {
+    padding-bottom: 50px;
   }
 }
