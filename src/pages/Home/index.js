@@ -29,8 +29,6 @@ class Home extends Component {
       newsItems: [],
       loading: false
     };
-    this.handleToMap = this.handleToMap.bind(this);
-    this.handleToCityList = this.handleToCityList.bind(this);
   }
 
   async getCity() {
@@ -99,14 +97,6 @@ class Home extends Component {
       this.renderRentItems(this.state.city);
       this.renderNewsItems(this.state.city);
     });
-  }
-
-  handleToMap() {
-    this.props.history.push('/map');
-  }
-
-  handleToCityList() {
-    this.props.history.push('/citylist');
   }
 
   render() {
