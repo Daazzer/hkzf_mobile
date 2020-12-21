@@ -157,6 +157,7 @@ export class Map extends Component {
   }
 
   async showRentInfo({ value }, e) {
+    this.setState({ isShowRentInfo: false });
     const { clientX, clientY } = e.changedTouches[0];
     const X = window.innerWidth / 2 - clientX;
     const Y = (window.innerHeight - 330) / 2 - clientY;
@@ -170,10 +171,7 @@ export class Map extends Component {
       return;
     }
     Toast.loading('获取租房信息中...');
-    this.setState({
-      loading: true,
-      isShowRentInfo: false
-    });
+    this.setState({ loading: true });
     const [err, res] = await getHouses({ cityId });
 
     if (err) {
