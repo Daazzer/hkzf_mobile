@@ -192,6 +192,67 @@ export class Map extends Component {
           leftContent={<i className="iconfont icon-back"></i>}
           onLeftClick={() => history.goBack()}
         >地图找房</NavBar>
+        <HouseInfo />
+      </div>
+    );
+  }
+}
+
+class HouseInfo extends Component {
+  render() {
+    return (
+      <div className="house-info">
+        <div className="house-info-head">
+          <h2>房屋列表</h2>
+          <span className="more">更多房源</span>
+        </div>
+        <ul className="house-info-list">
+          <li className="house-info-list__item">
+            <img src="http://localhost:8080/newImg/7bjljjebh.jpg" alt="house info" />
+            <div className="info-content">
+              <h3>时尚街区西区 1室1厅 4200元</h3>
+              <p className="info-content__desc">一室/95/南/时尚街区西区</p>
+              <div className="info-content__tags">
+                <span className="tag tag1">近地铁</span>
+                <span className="tag tag2">集中供暖</span>
+                <span className="tag tag3">随时看房</span>
+              </div>
+              <p className="info-content__price">
+                <strong>4200</strong>元/月
+              </p>
+            </div>
+          </li>
+          <li className="house-info-list__item">
+            <img src="http://localhost:8080/newImg/7bjljjebh.jpg" alt="house info" />
+            <div className="info-content">
+              <h3>时尚街区西区 1室1厅 4200元</h3>
+              <p className="info-content__desc">一室/95/南/时尚街区西区</p>
+              <div className="info-content__tags">
+                <span className="tag tag1">近地铁</span>
+                <span className="tag tag2">集中供暖</span>
+                <span className="tag tag3">随时看房</span>
+              </div>
+              <p className="info-content__price">
+                <strong>4200</strong>元/月
+              </p>
+            </div>
+          </li>
+          <li className="house-info-list__item">
+            <img src="http://localhost:8080/newImg/7bjljjebh.jpg" alt="house info" />
+            <div className="info-content">
+              <h3>时尚街区西区 1室1厅 4200元</h3>
+              <p className="info-content__desc">一室/95/南/时尚街区西区</p>
+              <div className="info-content__tags">
+                <span className="tag tag1">近地铁</span>
+                <span className="tag tag2">集中供暖</span>
+                <span className="tag tag3">随时看房</span>
+              </div>
+              <p className="info-content__price">
+                <strong>4200</strong>元/月
+              </p>
+            </div>
+          </li>
+        </ul>
       </div>
     );
   }
