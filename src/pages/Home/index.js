@@ -117,7 +117,7 @@ class Home extends Component {
           onToMap={this.handleToMap}
           onToCitylist={this.handleToCityList}
         />
-        <CateNav />
+        <CateNav history={this.props.history} />
         <RecommendRent
           rentItems={this.state.rentItems}
           loading={this.state.loading}
@@ -190,7 +190,7 @@ class Swiper extends Component {
         autoplayInterval={5000}
       >
         {this.state.carouselItems.map(carouselItem => (
-          <a key={carouselItem.id} href="https://lianjia.com" style={{ display: 'inline-block', minHeight: 176 }}>
+          <a key={carouselItem.id} href="https://lianjia.com" style={{ display: 'inline-block', minHeight: 176, width: '100%' }}>
             <img
               src={carouselItem.imgSrc}
               alt={carouselItem.alt}
@@ -204,22 +204,26 @@ class Swiper extends Component {
   }
 }
 
-function CateNav() {
+function CateNav(props) {
   const cateNavs = [
     {
       title: '整租',
+      to: '/findhouse',
       image: require('@/assets/images/nav-1.png').default
     },
     {
       title: '合租',
+      to: '/findhouse',
       image: require('@/assets/images/nav-2.png').default
     },
     {
       title: '地图找房',
+      to: '/map',
       image: require('@/assets/images/nav-3.png').default
     },
     {
       title: '去出租',
+      to: '/login',
       image: require('@/assets/images/nav-4.png').default
     }
   ];
@@ -227,7 +231,7 @@ function CateNav() {
   return (
     <Flex className="cate-nav">
       {cateNavs.map(cateNav =>
-        <Flex.Item className="cate-nav__item" key={cateNav.title}>
+        <Flex.Item className="cate-nav__item" key={cateNav.title} onClick={() => props.history.push(cateNav.to)}>
           <img src={cateNav.image} alt="cateNavIcon" />
           <h2>{cateNav.title}</h2>
         </Flex.Item>
