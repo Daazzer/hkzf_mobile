@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { NavBar, Toast } from 'antd-mobile';
+import HouseInfoList from '../../components/HouseInfoList';
 import myMap from '../../utils/map';
 import { getAreaInfo, getAreaMap, getHouses } from '../../utils/api';
 import storage from '../../utils/storage';
@@ -247,43 +248,15 @@ export class Map extends Component {
 
 class HouseInfo extends Component {
   render() {
-    const active = this.props.active;
-    const houseInfoItems = this.props.houseInfoItems;
+    const { active, houseInfoItems } = this.props;
+
     return (
       <div className={`house-info ${active ? 'active' : ''}`}>
         <div className="house-info-head">
           <h2>房屋列表</h2>
           <span className="more">更多房源</span>
         </div>
-        <ul className="house-info-list">
-          {houseInfoItems.map(houseInfoItem => {
-            const tags = houseInfoItem.tags;
-            let infoContentTags = null
-
-            if (tags.length > 0) {
-              infoContentTags = (
-                <div className="info-content__tags">
-                  {tags.map((tag, i) =>
-                    <span key={tag} className={`tag tag${i+1}`}>{tag}</span>
-                  )}
-                </div>
-              );
-            }
-            return (
-              <li className="house-info-list__item" key={houseInfoItem.houseCode} onClick={this.props.onToDetail}>
-                <img src={houseInfoItem.houseImg} alt="house info" />
-                <div className="info-content">
-                  <h3>{houseInfoItem.title}</h3>
-                  <p className="info-content__desc">{houseInfoItem.desc}</p>
-                  {infoContentTags}
-                  <p className="info-content__price">
-                    <strong>{houseInfoItem.price}</strong>元/月
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        <HouseInfoList houseInfoItems={houseInfoItems} />
       </div>
     );
   }
