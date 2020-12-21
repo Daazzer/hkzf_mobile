@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { NavBar, Toast } from 'antd-mobile';
-import HouseInfoList from '../../components/HouseInfoList';
+import HouseInfoItem from '../../components/HouseInfoItem';
 import myMap from '../../utils/map';
 import { getAreaInfo, getAreaMap, getHouses } from '../../utils/api';
 import storage from '../../utils/storage';
@@ -256,7 +256,19 @@ class HouseInfo extends Component {
           <h2>房屋列表</h2>
           <span className="more">更多房源</span>
         </div>
-        <HouseInfoList houseInfoItems={houseInfoItems} />
+        <ul className="house-info-list">
+          {houseInfoItems.map(houseInfoItem =>
+            <HouseInfoItem
+              key={houseInfoItem.houseCode}
+              title={houseInfoItem.title}
+              houseCode={houseInfoItem.houseCode}
+              houseImg={houseInfoItem.houseImg}
+              desc={houseInfoItem.desc}
+              tags={houseInfoItem.tags}
+              price={houseInfoItem.price}
+            />
+          )}
+        </ul>
       </div>
     );
   }

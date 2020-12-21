@@ -69,4 +69,9 @@
       font-size: 15px;
     }
   }
+  &-list {
+    padding: 0 10px 45px;
+    height: 100%;
+    overflow-y: auto;
+  }
 }
