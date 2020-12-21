@@ -12,6 +12,7 @@ import {
   getNews,
   getAreaInfo
 } from '../../utils/api';
+import SearchBar from '../../components/SearchBar';
 import map from '../../utils/map';
 import storage from '../../utils/storage';
 import './index.scss';
@@ -112,11 +113,7 @@ class Home extends Component {
     return (
       <div className="home">
         <Swiper />
-        <SearchBar
-          cityName={this.state.city.label}
-          onToMap={this.handleToMap}
-          onToCitylist={this.handleToCityList}
-        />
+        <SearchBar style={{ position: 'absolute', top: 25,  }} cityName={this.state.city.label} />
         <CateNav history={this.props.history} />
         <RecommendRent
           rentItems={this.state.rentItems}
@@ -127,28 +124,6 @@ class Home extends Component {
           loading={this.state.loading}
         />
       </div>
-    );
-  }
-}
-
-class SearchBar extends Component {
-  render() {
-    const cityName = this.props.cityName;
-
-    return (
-      <Flex className="search-bar">
-        <Flex  className="search-bar__search">
-          <div className="city" onClick={this.props.onToCitylist}>
-            <span>{cityName}</span>
-            <i className="iconfont icon-arrow"></i>
-          </div>
-          <div className="address">
-            <i className="iconfont icon-seach"></i>
-            <span>请输入小区或地址</span>
-          </div>
-        </Flex>
-        <i className="search-bar__map iconfont icon-map" onClick={this.props.onToMap}></i>
-      </Flex>
     );
   }
 }
