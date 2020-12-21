@@ -21,6 +21,7 @@ export class Map extends Component {
       isShowRentInfo: false,
       loading: false
     };
+    this.goToDetail = this.goToDetail.bind(this);
   }
 
   async getCityInfo(name) {
@@ -218,6 +219,10 @@ export class Map extends Component {
     this.renderLabels();
   }
 
+  goToDetail() {
+    this.props.history.push('/detail');
+  }
+
   render() {
     const history = this.props.history;
 
@@ -233,6 +238,7 @@ export class Map extends Component {
         <HouseInfo
           active={this.state.isShowRentInfo}
           houseInfoItems={this.state.houseInfoItems}
+          onToDetail={this.goToDetail}
         />
       </div>
     );
@@ -264,14 +270,14 @@ class HouseInfo extends Component {
               );
             }
             return (
-              <li className="house-info-list__item" key={houseInfoItem.houseCode}>
+              <li className="house-info-list__item" key={houseInfoItem.houseCode} onClick={this.props.onToDetail}>
                 <img src={houseInfoItem.houseImg} alt="house info" />
                 <div className="info-content">
                   <h3>{houseInfoItem.title}</h3>
                   <p className="info-content__desc">{houseInfoItem.desc}</p>
                   {infoContentTags}
                   <p className="info-content__price">
-                    <strong>4200</strong>元/月
+                    <strong>{houseInfoItem.price}</strong>元/月
                   </p>
                 </div>
               </li>
