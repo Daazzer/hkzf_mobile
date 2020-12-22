@@ -12,6 +12,8 @@ class Filter extends Component {
     };
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+    this.onConfirm = this.onConfirm.bind(this);
   }
 
   onOpen(activeType) {
@@ -20,6 +22,18 @@ class Filter extends Component {
   }
 
   onClose() {
+    this.closePicker();
+  }
+
+  onCancel() {
+    this.closePicker();
+  }
+
+  onConfirm() {
+    this.closePicker();
+  }
+
+  closePicker() {
     this.setState({ activeType: '' });
     document.body.classList.remove('body-fixed');
   }
@@ -37,7 +51,7 @@ class Filter extends Component {
             activeType={activeType}
           />
           {isActiveComponent ? <FilterPicker /> : null}
-          {isActiveComponent ? <FilterFooter /> : null}
+          {isActiveComponent ? <FilterFooter onCancel={this.onCancel} onConfirm={this.onConfirm} /> : null}
         </div>
       </div>
     );
