@@ -1,17 +1,28 @@
 import { Component } from 'react';
 import { PickerView } from 'antd-mobile';
+import FilterFooter from '../FilterFooter';
 
 class FilterPicker extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      value: null,
+      value: props.defaultValue
     };
     this.onChange = this.onChange.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+    this.onConfirm = this.onConfirm.bind(this);
   }
 
   onChange(value) {
     this.setState({ value });
+  }
+
+  onCancel() {
+    this.props.onCancel();
+  }
+
+  onConfirm() {
+    this.props.onConfirm(this.state.value);
   }
 
   render() {
@@ -23,6 +34,10 @@ class FilterPicker extends Component {
           value={this.state.value}
           cols={cols}
           data={data}
+        />
+        <FilterFooter
+          onCancel={this.onCancel}
+          onConfirm={this.onConfirm}
         />
       </div>
     );

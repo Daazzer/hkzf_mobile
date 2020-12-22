@@ -2,7 +2,6 @@ import { Component } from 'react';
 import { Toast } from 'antd-mobile';
 import FilterTitle from '../FilterTitle';
 import FilterPicker from '../FilterPicker';
-import FilterFooter from '../FilterFooter';
 import api from '../../../utils/api';
 import './index.scss';
 
@@ -11,7 +10,13 @@ class Filter extends Component {
     super();
     this.state = {
       activeType: '',
-      conditionsData: {}
+      conditionsData: {},
+      selectedData: {
+        area: ['area', 'null'],
+        mode: ['null'],
+        price: ['null'],
+        more: []
+      }
     };
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
@@ -32,7 +37,14 @@ class Filter extends Component {
     this.closePicker();
   }
 
-  onConfirm() {
+  onConfirm(data) {
+    const { selectedData, activeType } = this.state;
+    this.setState({
+      selectedData: {
+        ...selectedData,
+        [activeType]: data
+      }
+    });
     this.closePicker();
   }
 
@@ -57,24 +69,36 @@ class Filter extends Component {
       activeType,
       conditionsData: { area, subway, rentType, price }
     } = this.state;
+    const defaultValue = this.state.selectedData[activeType];
     let data = [];
     let cols = 3;
 
     switch (activeType) {
       case 'area':
-        data = [area, subway];
+        data = [area ? area : '无数据', subway ? subway : '无数据'];
         break;
       case 'mode':
-        data = rentType;
+        data = rentType ? rentType : ['无数据'];
         cols = 1;
         break;
       case 'price':
-        data = price;
+        data = price ? price : ['无数据'];
         cols = 1;
+        break;
+      default:
         break;
     }
 
-    return <FilterPicker data={data} cols={cols} />;
+    return (
+      <FilterPicker
+        key={activeType}
+        data={data}
+        cols={cols}
+        defaultValue={defaultValue}
+        onCancel={this.onCancel}
+        onConfirm={this.onConfirm}
+      />
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -96,7 +120,6 @@ class Filter extends Component {
             activeType={activeType}
           />
           {isActiveComponent ? this.renderFilterPicker : null}
-          {isActiveComponent ? <FilterFooter onCancel={this.onCancel} onConfirm={this.onConfirm} /> : null}
         </div>
       </div>
     );
