@@ -29,9 +29,9 @@ class FilterTitle extends Component {
   }
 
   render() {
-    const { activeType, onOpen } = this.props;
+    const { activeType, onOpen, selectedStatus } = this.props;
     const filterTitleItems = this.state.filterTitleItems;
-    const activeClass = type => activeType === type ? 'active' : '';
+    const activeClass = type => activeType === type || selectedStatus[type] ? 'active' : '';
     return (
       <Flex className="filter-title" align="center">
         {filterTitleItems.map(filterTitleItem =>
@@ -51,7 +51,8 @@ class FilterTitle extends Component {
 
 FilterTitle.propTypes = {
   activeType: PropTypes.string,
-  onOpen: PropTypes.func
+  onOpen: PropTypes.func,
+  titleSelectedStatuses: PropTypes.object
 };
 
 export default FilterTitle;

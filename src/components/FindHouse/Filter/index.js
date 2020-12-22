@@ -64,6 +64,29 @@ class Filter extends Component {
     this.setState({ conditionsData: res.data.body });
   }
 
+  get titleSelectedStatus() {
+    const seletedData = this.state.selectedData;
+    const status = {
+      area: false,
+      mode: false,
+      price: false
+    };
+    Object.keys(seletedData).forEach(key => {
+      switch (key) {
+        case 'area':
+          status[key] = seletedData[key].join('') !== 'areanull';
+          break;
+        case 'mode':
+        case 'price':
+          status[key] = seletedData[key].join('') !== 'null';
+          break;
+        default:
+          break;
+      }
+    });
+    return status;
+  }
+
   get renderFilterPicker() {
     const {
       activeType,
@@ -118,6 +141,7 @@ class Filter extends Component {
           <FilterTitle
             onOpen={this.onOpen}
             activeType={activeType}
+            selectedStatus={this.titleSelectedStatus}
           />
           {isActiveComponent ? this.renderFilterPicker : null}
         </div>
