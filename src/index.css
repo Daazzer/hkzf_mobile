@@ -12,6 +12,10 @@ body {
   background-color: #fff;
 }
 
+body.body-fixed {
+  overflow: hidden;
+}
+
 ul, ol, li {
   list-style: none;
 }
