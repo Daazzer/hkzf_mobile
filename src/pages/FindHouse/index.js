@@ -47,6 +47,7 @@ export class FindHouse extends Component {
   }
 
   loadMoreRows({ startIndex, stopIndex }) {
+    // TODO 过快滚动时会有 startIndex 相同的情况
     return this.renderHouseInfoItems(this.state.city.value, startIndex + 1, stopIndex + 1);
   }
 
