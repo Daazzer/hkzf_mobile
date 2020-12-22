@@ -113,7 +113,7 @@ export class FindHouse extends Component {
     const count = this.state.count;  // 列表总条数
 
     if (count === 0) {
-      return <div>暂无数据</div>;
+      return <li className="findhouse-house-list__item--none">暂无数据</li>;
     }
 
     return (
