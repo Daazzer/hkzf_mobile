@@ -12,7 +12,7 @@ body {
   background-color: #fff;
 }
 
-ul, ol {
+ul, ol, li {
   list-style: none;
 }
 
