@@ -11,7 +11,7 @@ class Filter extends Component {
     super();
     this.state = {
       activeType: '',
-      conditionsData: null
+      conditionsData: {}
     };
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
@@ -52,6 +52,31 @@ class Filter extends Component {
     this.setState({ conditionsData: res.data.body });
   }
 
+  get renderFilterPicker() {
+    const {
+      activeType,
+      conditionsData: { area, subway, rentType, price }
+    } = this.state;
+    let data = [];
+    let cols = 3;
+
+    switch (activeType) {
+      case 'area':
+        data = [area, subway];
+        break;
+      case 'mode':
+        data = rentType;
+        cols = 1;
+        break;
+      case 'price':
+        data = price;
+        cols = 1;
+        break;
+    }
+
+    return <FilterPicker data={data} cols={cols} />;
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.id !== prevProps.id) {
       this.renderConditionsData(this.props.id);
@@ -70,7 +95,7 @@ class Filter extends Component {
             onOpen={this.onOpen}
             activeType={activeType}
           />
-          {isActiveComponent ? <FilterPicker /> : null}
+          {isActiveComponent ? this.renderFilterPicker : null}
           {isActiveComponent ? <FilterFooter onCancel={this.onCancel} onConfirm={this.onConfirm} /> : null}
         </div>
       </div>
