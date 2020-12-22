@@ -5,6 +5,11 @@
   &__item {
     font-size: 17px;
     text-align: center;
+    &.active {
+      &, .iconfont {
+        color: #21b97a;
+      }
+    }
     .iconfont {
       margin-left: 3px;
       font-size: 12px;
