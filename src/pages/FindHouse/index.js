@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { NavBar, Toast } from 'antd-mobile';
+import { NavBar, Toast, ActivityIndicator } from 'antd-mobile';
 import {
   WindowScroller,
   AutoSizer,
@@ -47,15 +47,15 @@ export class FindHouse extends Component {
   }
 
   loadMoreRows({ startIndex, stopIndex }) {
-    console.log(startIndex, stopIndex);
+    return this.renderHouseInfoItems(this.state.city.value, startIndex + 1, stopIndex + 1);
   }
 
-  async renderHouseInfoItems(cityId) {
+  async renderHouseInfoItems(cityId, start, end) {
     Toast.loading('获取房源信息中...');
     const [err, res] = await api.getHouses({
       cityId,
-      start: 1,
-      end: 20
+      start,
+      end
     });
 
     if (err) {
@@ -76,11 +76,24 @@ export class FindHouse extends Component {
       }
     });
     const count = res.data.body.count;
-    this.setState({ houseInfoItems, count })
+    this.setState({
+      houseInfoItems: [...this.state.houseInfoItems, ...houseInfoItems],
+      count
+    });
   }
 
   renderHouseList({ key, index, style }) {
     const houseInfoItem = this.state.houseInfoItems[index];
+
+    if (!houseInfoItem) {
+      return (
+        <li className="findhouse-house-list__item--loading" key={key} style={style}>
+          <div className="item-bg">
+            <ActivityIndicator size="large" text="加载中..." />
+          </div>
+        </li>
+      );
+    }
 
     return (
       <HouseInfoItem
@@ -143,7 +156,7 @@ export class FindHouse extends Component {
     }
 
     this.setState({ city });
-    this.renderHouseInfoItems(city.value);
+    this.renderHouseInfoItems(city.value, 1, 20);
   }
 
   render() {
