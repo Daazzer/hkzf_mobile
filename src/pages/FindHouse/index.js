@@ -9,6 +9,7 @@ import {
 import SearchBar from '../../components/SearchBar';
 import Filter from '../../components/FindHouse/Filter';
 import HouseInfoItem from '../../components/HouseInfoItem';
+import Sticky from '../../components/Sticky';
 import api from '../../utils/api';
 import map from '../../utils/map';
 import storage from '../../utils/storage';
@@ -23,6 +24,7 @@ export class FindHouse extends Component {
         value: ''
       },
       count: 0,
+      isSticky: false,
       houseInfoItems: []
     };
   }
@@ -81,6 +83,14 @@ export class FindHouse extends Component {
       houseInfoItems: [...this.state.houseInfoItems, ...houseInfoItems],
       count
     });
+  }
+
+  onScroll({ scrollTop }) {
+    if (scrollTop > 45) {
+      this.setState({ isSticky: true });
+    } else {
+      this.setState({ isSticky: false });
+    }
   }
 
   renderHouseList({ key, index, style }) {
@@ -162,20 +172,27 @@ export class FindHouse extends Component {
 
   render() {
     return (
-      <div className="findhouse">
-        <NavBar
-          className="nav-header"
-          mode="light"
-          onLeftClick={() => this.props.history.goBack()}
-          leftContent={<i className="iconfont icon-back"></i>}
-        >
-          <SearchBar mapIconColor="#00ae66" cityName={this.state.city.label} />
-        </NavBar>
-        <Filter />
-        <div className="findhouse-house-list">
-          {this.renderList}
-        </div>
-      </div>
+      <WindowScroller onScroll={this.onScroll.bind(this)}>
+        {
+          () =>
+          <div className="findhouse">
+            <NavBar
+              className="nav-header"
+              mode="light"
+              onLeftClick={() => this.props.history.goBack()}
+              leftContent={<i className="iconfont icon-back"></i>}
+            >
+              <SearchBar mapIconColor="#00ae66" cityName={this.state.city.label} />
+            </NavBar>
+            <Sticky holderHeight={40} isSticky={this.state.isSticky}>
+              <Filter />
+            </Sticky>
+            <div className="findhouse-house-list">
+              {this.renderList}
+            </div>
+          </div>
+        }
+      </WindowScroller>
     );
   }
 }
