@@ -1,5 +1,6 @@
 .findhouse {
   height: 100vh;
+  padding-bottom: 50px;
   .nav-header {
     color: #999;
     padding: 0 10px;
@@ -16,9 +17,14 @@
     }
   }
   &-house-list {
-    height: 100%;
+    height: 93%;
     padding: 0 10px 50px;
     &__item {
+      &--none {
+        padding-top: 100px;
+        text-align: center;
+        color: #aaa;
+      }
       &--loading {
         padding: 5px;
         .item-bg {
