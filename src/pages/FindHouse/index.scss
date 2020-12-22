@@ -18,5 +18,17 @@
   &-house-list {
     height: 100%;
     padding: 0 10px 50px;
+    &__item {
+      &--loading {
+        padding: 5px;
+        .item-bg {
+          display: flex;
+          align-items: center;
+          padding-left: 10px;
+          height: 100%;
+          background-color: #fafafa;
+        }
+      }
+    }
   }
 }
