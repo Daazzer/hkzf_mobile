@@ -114,7 +114,7 @@ class CityList extends Component {
                   label,
                   value
                 });
-                this.props.history.push('/');
+                this.props.history.goBack();
               }}
             >{cityItem.label}</List.Item>
           )}
