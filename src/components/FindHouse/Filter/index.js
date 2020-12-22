@@ -1,14 +1,17 @@
 import { Component } from 'react';
+import { Toast } from 'antd-mobile';
 import FilterTitle from '../FilterTitle';
 import FilterPicker from '../FilterPicker';
 import FilterFooter from '../FilterFooter';
+import api from '../../../utils/api';
 import './index.scss';
 
 class Filter extends Component {
   constructor() {
     super();
     this.state = {
-      activeType: ''
+      activeType: '',
+      conditionsData: null
     };
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
@@ -36,6 +39,23 @@ class Filter extends Component {
   closePicker() {
     this.setState({ activeType: '' });
     document.body.classList.remove('body-fixed');
+  }
+
+  async renderConditionsData(id) {
+    const [err, res] = await api.getHousesCondition({ id });
+
+    if (err) {
+      Toast.fail('获取房屋查询信息失败');
+      return;
+    }
+
+    this.setState({ conditionsData: res.data.body });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.id !== prevProps.id) {
+      this.renderConditionsData(this.props.id);
+    }
   }
 
   render() {

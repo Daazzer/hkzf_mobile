@@ -18,7 +18,8 @@ const {
 } = area;
 
 const {
-  getHouses
+  getHouses,
+  getHousesCondition
 } = houses;
 
 const api = {
@@ -38,5 +39,6 @@ export {
   getAreaInfo,
   getAreaCommunity,
   getAreaMap,
-  getHouses
+  getHouses,
+  getHousesCondition
 }

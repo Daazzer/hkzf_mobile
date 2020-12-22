@@ -168,6 +168,7 @@ export class FindHouse extends Component {
 
     this.setState({ city });
     this.renderHouseInfoItems(city.value, 1, 20);
+    this.forceUpdate();
   }
 
   render() {
@@ -185,7 +186,7 @@ export class FindHouse extends Component {
               <SearchBar mapIconColor="#00ae66" cityName={this.state.city.label} />
             </NavBar>
             <Sticky holderHeight={40} isSticky={this.state.isSticky}>
-              <Filter />
+              <Filter id={this.state.city.value} />
             </Sticky>
             <div className="findhouse-house-list">
               {this.renderList}
