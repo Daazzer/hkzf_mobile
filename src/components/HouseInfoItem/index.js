@@ -9,7 +9,8 @@ function HouseInfoItem(props) {
     desc,
     tags,
     price,
-    history
+    history,
+    style
   } = props;
 
   let infoContentTags = null
@@ -28,6 +29,7 @@ function HouseInfoItem(props) {
     <li
       className="house-info-list__item"
       onClick={() => history.push(`/detail/${houseCode}`)}
+      style={style}
     >
       <img src={houseImg} alt="house info" />
       <div className="info-content">
