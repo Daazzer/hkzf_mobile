@@ -1,5 +1,6 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import { Toast } from 'antd-mobile';
+import { Spring } from 'react-spring/renderprops';
 import FilterTitle from '../FilterTitle';
 import FilterPicker from '../FilterPicker';
 import FilterMore from '../FilterMore';
@@ -19,6 +20,7 @@ class Filter extends Component {
         more: []
       }
     };
+    this.filterMoreRef = createRef();
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
@@ -26,7 +28,12 @@ class Filter extends Component {
   }
 
   onOpen(activeType) {
+    // console.log(this.filterMoreRef.current.setState({ selectedValues: this.state.selectedData.more }));
+
     this.setState({ activeType });
+    if (activeType === 'more') {
+      this.filterMoreRef.current.setState({ selectedValues: [...this.state.selectedData.more] });
+    }
     document.body.classList.add('body-fixed');
   }
 
@@ -39,6 +46,7 @@ class Filter extends Component {
   }
 
   onConfirm(data) {
+    console.log(1);
     const { selectedData, activeType } = this.state;
     this.setState({
       selectedData: {
@@ -133,23 +141,24 @@ class Filter extends Component {
 
   get renderFilterMore() {
     const { roomType, oriented, floor, characteristic } = this.state.conditionsData;
-    if (this.state.activeType === 'more') {
-      const defaultValue = this.state.selectedData.more;
-      return (
-        <FilterMore
-          defaultValue={defaultValue}
-          onClose={this.onClose}
-          onConfirm={this.onConfirm}
-          data={{
-            roomType,
-            oriented,
-            floor,
-            characteristic
-          }}
-        />
-      );
-    }
-    return null;
+    const defaultValue = this.state.selectedData.more;
+    const activeType = this.state.activeType
+    const isOpen = activeType === 'more';
+    return (
+      <FilterMore
+        defaultValue={[...defaultValue]}
+        onClose={this.onClose}
+        onConfirm={this.onConfirm}
+        isOpen={isOpen}
+        ref={this.filterMoreRef}
+        data={{
+          roomType,
+          oriented,
+          floor,
+          characteristic
+        }}
+      />
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -164,7 +173,14 @@ class Filter extends Component {
 
     return (
       <div className="filter">
-        {isActiveComponent ? <div className="filter-mask" onClick={this.onClose}></div> : null}
+        <Spring from={{ opacity: 0 }} to={{ opacity: isActiveComponent ? 1 : 0 }}>
+          {props => {
+            if (props.opacity === 0) {
+              return null
+            }
+            return <div className="filter-mask" style={props} onClick={this.onClose}></div>;
+          }}
+        </Spring>
         <div className="filter-content">
           <FilterTitle
             onOpen={this.onOpen}
