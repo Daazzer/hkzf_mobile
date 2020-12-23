@@ -86,6 +86,7 @@ class Filter extends Component {
           break;
         case 'more':
           status[key] = selectedData[key].length > 0;
+          break;
         default:
           break;
       }
