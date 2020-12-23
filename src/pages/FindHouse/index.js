@@ -200,15 +200,13 @@ export class FindHouse extends Component {
       }
     });
     this.setState({ filterResult }, () => {
-      if (Object.keys(filterResult).length > 0) {
-        window.scrollTo(0, 0);
-        this.renderHouseInfoItems(
-          this.state.city.value,
-          1,
-          20,
-          filterResult
-        );
-      }
+      window.scrollTo(0, 0);
+      this.renderHouseInfoItems(
+        this.state.city.value,
+        1,
+        20,
+        filterResult
+      );
     });
   }
 
