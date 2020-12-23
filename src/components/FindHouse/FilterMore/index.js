@@ -3,10 +3,10 @@ import FilterFooter from '../FilterFooter';
 import './index.scss';
 
 export class FilterMore extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      selectedValues: []
+      selectedValues: props.defaultValue
     };
   }
 
@@ -16,15 +16,18 @@ export class FilterMore extends Component {
   }
 
   renderData(data) {
-    return data.map(item => {
-      return (
-        <span
-          className={`filter-more__tag ${this.activeClass(item.value)}`}
-          key={item.value}
-          onClick={this.handleClick.bind(this, item.value)}
-        >{item.label}</span>
-      );
-    });
+    if (data) {
+      return data.map(item => {
+        return (
+          <span
+            className={`filter-more__tag ${this.activeClass(item.value)}`}
+            key={item.value}
+            onClick={this.handleClick.bind(this, item.value)}
+          >{item.label}</span>
+        );
+      });
+    }
+    return null;
   }
 
   handleClick(value) {
@@ -43,7 +46,7 @@ export class FilterMore extends Component {
   }
 
   render() {
-    const { onClose, data } = this.props;
+    const { onClose, data, onConfirm } = this.props;
     const {
       roomType,
       oriented,
@@ -64,7 +67,12 @@ export class FilterMore extends Component {
           <dt>房屋亮点</dt>
           <dd>{this.renderData(characteristic)}</dd>
         </dl>
-        <FilterFooter className="filter-more__footer" onCancel={() => this.setState({ selectedValues: [] })} cancelText="清除" />
+        <FilterFooter
+          className="filter-more__footer"
+          onCancel={() => this.setState({ selectedValues: [] })}
+          onConfirm={() => onConfirm(this.state.selectedValues)}
+          cancelText="清除"
+        />
       </div>
     );
   }
