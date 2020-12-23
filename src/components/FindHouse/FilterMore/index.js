@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Spring } from 'react-spring/renderprops';
 import FilterFooter from '../FilterFooter';
 import './index.scss';
 
@@ -46,7 +47,7 @@ export class FilterMore extends Component {
   }
 
   render() {
-    const { onClose, data, onConfirm } = this.props;
+    const { onClose, data, onConfirm, isOpen } = this.props;
     const {
       roomType,
       oriented,
@@ -56,23 +57,39 @@ export class FilterMore extends Component {
 
     return (
       <div className="filter-more">
-        <div className="filter-more__mask" onClick={onClose}></div>
-        <dl className="filter-more__list">
-          <dt>户型</dt>
-          <dd>{this.renderData(roomType)}</dd>
-          <dt>朝向</dt>
-          <dd>{this.renderData(oriented)}</dd>
-          <dt>楼层</dt>
-          <dd>{this.renderData(floor)}</dd>
-          <dt>房屋亮点</dt>
-          <dd>{this.renderData(characteristic)}</dd>
-        </dl>
-        <FilterFooter
-          className="filter-more__footer"
-          onCancel={() => this.setState({ selectedValues: [] })}
-          onConfirm={() => onConfirm(this.state.selectedValues)}
-          cancelText="清除"
-        />
+        <Spring to={{ opacity: isOpen ? 1 : 0 }}>
+          {props => {
+            if (props.opacity === 0) {
+              return null;
+            }
+            return <div className="filter-more__mask" onClick={() => {
+              onClose();
+              this.forceUpdate();
+            }} style={props}></div>;
+          }}
+        </Spring>
+        <Spring to={{ transform: `translate(${isOpen ? '0px' : '100%'}, 0px)` }}>
+          {props =>
+            <>
+              <dl className="filter-more__list" style={props}>
+                <dt>户型</dt>
+                <dd>{this.renderData(roomType)}</dd>
+                <dt>朝向</dt>
+                <dd>{this.renderData(oriented)}</dd>
+                <dt>楼层</dt>
+                <dd>{this.renderData(floor)}</dd>
+                <dt>房屋亮点</dt>
+                <dd>{this.renderData(characteristic)}</dd>
+              </dl>
+              <FilterFooter
+                className="filter-more__footer"
+                style={props}
+                onCancel={() => this.setState({ selectedValues: [] })}
+                onConfirm={() => onConfirm(this.state.selectedValues)}
+                cancelText="清除"
+              />
+            </>}
+        </Spring>
       </div>
     );
   }
