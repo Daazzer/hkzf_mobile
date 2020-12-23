@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { Toast } from 'antd-mobile';
 import FilterTitle from '../FilterTitle';
 import FilterPicker from '../FilterPicker';
+import FilterMore from '../FilterMore';
 import api from '../../../utils/api';
 import './index.scss';
 
@@ -124,6 +125,24 @@ class Filter extends Component {
     );
   }
 
+  get renderFilterMore() {
+    const { roomType, oriented, floor, characteristic } = this.state.conditionsData;
+    if (this.state.activeType === 'more') {
+      return (
+        <FilterMore
+          onClose={this.onClose}
+          data={{
+            roomType,
+            oriented,
+            floor,
+            characteristic
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.id !== prevProps.id) {
       this.renderConditionsData(this.props.id);
@@ -144,6 +163,7 @@ class Filter extends Component {
             selectedStatus={this.titleSelectedStatus}
           />
           {isActiveComponent ? this.renderFilterPicker : null}
+          {this.renderFilterMore}
         </div>
       </div>
     );
