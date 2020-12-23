@@ -66,21 +66,24 @@ class Filter extends Component {
   }
 
   get titleSelectedStatus() {
-    const seletedData = this.state.selectedData;
+    const selectedData = this.state.selectedData;
     const status = {
       area: false,
       mode: false,
-      price: false
+      price: false,
+      more: false
     };
-    Object.keys(seletedData).forEach(key => {
+    Object.keys(selectedData).forEach(key => {
       switch (key) {
         case 'area':
-          status[key] = seletedData[key].join('') !== 'areanull';
+          status[key] = selectedData[key].join('') !== 'areanull';
           break;
         case 'mode':
         case 'price':
-          status[key] = seletedData[key].join('') !== 'null';
+          status[key] = selectedData[key].join('') !== 'null';
           break;
+        case 'more':
+          status[key] = selectedData[key].length > 0;
         default:
           break;
       }
@@ -128,9 +131,12 @@ class Filter extends Component {
   get renderFilterMore() {
     const { roomType, oriented, floor, characteristic } = this.state.conditionsData;
     if (this.state.activeType === 'more') {
+      const defaultValue = this.state.selectedData.more;
       return (
         <FilterMore
+          defaultValue={defaultValue}
           onClose={this.onClose}
+          onConfirm={this.onConfirm}
           data={{
             roomType,
             oriented,
