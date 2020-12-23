@@ -45,6 +45,8 @@ class Filter extends Component {
         ...selectedData,
         [activeType]: data
       }
+    }, () => {
+      this.props.onFilter(this.state.selectedData)
     });
     this.closePicker();
   }

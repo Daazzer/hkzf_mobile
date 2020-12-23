@@ -1,6 +1,8 @@
 .findhouse {
   height: 100vh;
-  padding-bottom: 50px;
+  &-vlist {
+    padding-bottom: 50px;
+  }
   .nav-header {
     color: #999;
     padding: 0 10px;
