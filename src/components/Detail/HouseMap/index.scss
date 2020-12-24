@@ -1,0 +1,11 @@
+.house-map {
+  background-color: #fff;
+  &__title {
+    padding: 0 3%;
+    line-height: 44px;
+    font-weight: normal;
+  }
+  &__map-gl {
+    height: 145px;
+  }
+}

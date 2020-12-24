@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { NavBar, Carousel } from 'antd-mobile';
 import HouseInfo from '../../components/Detail/HouseInfo';
+import HouseMap from '../../components/Detail/HouseMap';
 import './index.scss';
 
 export class Detail extends Component {
@@ -50,6 +51,7 @@ export class Detail extends Component {
           ))}
         </Carousel>
         <HouseInfo />
+        <HouseMap />
       </div>
     );
   }
