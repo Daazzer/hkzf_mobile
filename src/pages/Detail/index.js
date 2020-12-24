@@ -4,6 +4,7 @@ import HouseInfo from '../../components/Detail/HouseInfo';
 import HouseMap from '../../components/Detail/HouseMap';
 import HouseAbout from '../../components/Detail/HouseAbout';
 import HouseProfile from '../../components/Detail/HouseProfile';
+import HouseRecommend from '../../components/Detail/HouseRecommend';
 import './index.scss';
 
 export class Detail extends Component {
@@ -56,6 +57,7 @@ export class Detail extends Component {
         <HouseMap />
         <HouseAbout />
         <HouseProfile />
+        <HouseRecommend />
       </div>
     );
   }
