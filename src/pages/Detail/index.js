@@ -16,7 +16,9 @@ export class Detail extends Component {
       houseInfo: {
         houseImg: [],
         tags: [],
-        oriented: []
+        oriented: [],
+        coord: {},
+        supporting: []
       }
     };
   }
@@ -52,7 +54,9 @@ export class Detail extends Component {
       roomType,
       size,
       oriented,
-      floor
+      floor,
+      coord,
+      supporting
     } = this.state.houseInfo;
     return (
       <div className="house-detail">
@@ -95,8 +99,11 @@ export class Detail extends Component {
           oriented={oriented}
           floor={floor}
         />
-        <HouseMap />
-        <HouseAbout />
+        <HouseMap
+          community={community}
+          coord={coord}
+        />
+        <HouseAbout supporting={supporting} />
         <HouseProfile />
         <HouseRecommend />
         <HouseDetailOption />
