@@ -19,7 +19,7 @@ function HouseInfoItem(props) {
     infoContentTags = (
       <div className="info-content__tags">
         {tags.map((tag, i) =>
-          <span key={tag} className={`tag tag${i+1}`}>{tag}</span>
+          <span key={tag} className={`tag tag${i % 3 + 1}`}>{tag}</span>
         )}
       </div>
     );
