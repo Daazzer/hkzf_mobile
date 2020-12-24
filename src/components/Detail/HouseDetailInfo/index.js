@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { Flex } from 'antd-mobile';
 import './index.scss';
 
-export class HouseInfo extends Component {
+export class HouseDetailInfo extends Component {
   render() {
     const { title, tags, price, roomType, size, oriented, floor } = this.props;
 
@@ -43,4 +43,4 @@ export class HouseInfo extends Component {
   }
 }
 
-export default HouseInfo;
+export default HouseDetailInfo;

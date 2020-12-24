@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { NavBar, Carousel, Toast } from 'antd-mobile';
-import HouseInfo from '../../components/Detail/HouseInfo';
+import HouseDetailInfo from '../../components/Detail/HouseDetailInfo';
 import HouseMap from '../../components/Detail/HouseMap';
 import HouseAbout from '../../components/Detail/HouseAbout';
 import HouseProfile from '../../components/Detail/HouseProfile';
@@ -90,7 +90,7 @@ export class Detail extends Component {
             </a>
           ))}
         </Carousel>
-        <HouseInfo
+        <HouseDetailInfo
           title={title}
           tags={tags}
           price={price}
