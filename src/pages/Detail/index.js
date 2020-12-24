@@ -77,15 +77,14 @@ export class Detail extends Component {
             <a
               key={img}
               href="https://lianjia.com"
-              style={{ display: 'inline-block', width: '100%', height: 252 }}
+              style={{ display: 'inline-block', width: '100%' }}
             >
               <img
                 src={img}
                 alt="房屋照片"
-                style={{ display: 'inline-block', width: '100%', height: '100%' }}
+                style={{ display: 'inline-block', width: '100%', height: 252 }}
                 onLoad={() => {
                   window.dispatchEvent(new Event('resize'));
-                  this.setState({ imgHeight: 'auto' });
                 }}
               />
             </a>
