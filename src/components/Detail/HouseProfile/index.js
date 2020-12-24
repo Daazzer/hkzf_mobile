@@ -3,6 +3,7 @@ import './index.scss';
 
 export class HouseProfile extends Component {
   render() {
+    const { description } = this.props;
     return (
       <div className="house-profile">
         <h3 className="house-profile__title">房源概述</h3>
@@ -19,7 +20,7 @@ export class HouseProfile extends Component {
           </div>
           <button>发消息</button>
         </div>
-        <p>暂无房屋描述</p>
+        <p>{description ? description : '暂无房屋描述'}</p>
       </div>
     );
   }

@@ -56,7 +56,8 @@ export class Detail extends Component {
       oriented,
       floor,
       coord,
-      supporting
+      supporting,
+      description
     } = this.state.houseInfo;
     return (
       <div className="house-detail">
@@ -104,7 +105,7 @@ export class Detail extends Component {
           coord={coord}
         />
         <HouseAbout supporting={supporting} />
-        <HouseProfile />
+        <HouseProfile description={description} />
         <HouseRecommend />
         <HouseDetailOption />
       </div>
