@@ -1,7 +1,13 @@
 .house-detail {
+  background-color: #f6f5f6;
   .nav-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
     color: #fff;
-    background-color: rgba(0, 0, 0, .5);
+    background: linear-gradient(rgba(105, 105, 105, 0.4), rgba(105, 105, 105, 0.25), rgba(105, 105, 105, 0.03));
     .am-navbar-title {
       color: #fff;
       font-size: 16px;
