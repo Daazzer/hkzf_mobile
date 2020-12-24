@@ -19,6 +19,12 @@ import http from '../http';
 const getHouses = params => http.get('/houses', params);
 
 /**
+ * 查询房屋具体信息
+ * @param {string} id 发送房屋的具体code值
+ */
+const getHousesById = id => http.get(`/houses/${id}`);
+
+/**
  * 获取房屋查询条件
  * @param {Object} params 参数对象
  * @param {string} params.id 城市id
@@ -27,7 +33,8 @@ const getHousesCondition = params => http.get('/houses/condition', params);
 
 const houses = {
   getHouses,
-  getHousesCondition
+  getHousesCondition,
+  getHousesById
 };
 
 export default houses;

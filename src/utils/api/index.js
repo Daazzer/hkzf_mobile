@@ -19,6 +19,7 @@ const {
 
 const {
   getHouses,
+  getHousesById,
   getHousesCondition
 } = houses;
 
@@ -40,5 +41,6 @@ export {
   getAreaCommunity,
   getAreaMap,
   getHouses,
+  getHousesById,
   getHousesCondition
 }
