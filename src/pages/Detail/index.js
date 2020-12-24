@@ -3,6 +3,7 @@ import { NavBar, Carousel } from 'antd-mobile';
 import HouseInfo from '../../components/Detail/HouseInfo';
 import HouseMap from '../../components/Detail/HouseMap';
 import HouseAbout from '../../components/Detail/HouseAbout';
+import HouseProfile from '../../components/Detail/HouseProfile';
 import './index.scss';
 
 export class Detail extends Component {
@@ -54,6 +55,7 @@ export class Detail extends Component {
         <HouseInfo />
         <HouseMap />
         <HouseAbout />
+        <HouseProfile />
       </div>
     );
   }
