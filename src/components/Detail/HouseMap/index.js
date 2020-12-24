@@ -2,12 +2,13 @@ import { Component } from 'react';
 import './index.scss';
 
 export class HouseMap extends Component {
-  componentDidMount() {
+  componentDidUpdate() {
     const { community, coord } = this.props;
     const { longitude, latitude } = coord;
 
     const map = new window.BMap.Map('houseMapGL');
     const point = new window.BMap.Point(longitude, latitude);
+    map.centerAndZoom(point, 17);
     const opts = {
       position: point,
       offset: new window.BMap.Size(-8, -36)
@@ -26,14 +27,13 @@ export class HouseMap extends Component {
       fontSize: 12,
       userSelect: 'none'
     };
-    const label = new window.BMap.Label('欢迎使用百度地图JSAPI GL版本', opts);
+    const label = new window.BMap.Label('', opts);
     label.setStyle(labelStyle);
     label.setContent(`
       <span>${community}</span>
       <div class="house-map-label-arrow"></div>
     `);
     map.addOverlay(label);
-    map.centerAndZoom(point, 18);
   }
   render() {
     const { community } = this.props;
