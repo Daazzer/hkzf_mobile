@@ -3,8 +3,11 @@ import './index.scss';
 
 export class HouseMap extends Component {
   componentDidMount() {
+    const { community, coord } = this.props;
+    const { longitude, latitude } = coord;
+
     const map = new window.BMap.Map('houseMapGL');
-    const point = new window.BMap.Point(116.404, 39.915);
+    const point = new window.BMap.Point(longitude, latitude);
     const opts = {
       position: point,
       offset: new window.BMap.Size(-8, -36)
@@ -26,16 +29,17 @@ export class HouseMap extends Component {
     const label = new window.BMap.Label('欢迎使用百度地图JSAPI GL版本', opts);
     label.setStyle(labelStyle);
     label.setContent(`
-      <span>御景峰</span>
+      <span>${community}</span>
       <div class="house-map-label-arrow"></div>
     `);
     map.addOverlay(label);
-    map.centerAndZoom(point, 15);
+    map.centerAndZoom(point, 18);
   }
   render() {
+    const { community } = this.props;
     return (
       <div className="house-map">
-        <h3 className="house-map__title">小区：绿谷康都</h3>
+        <h3 className="house-map__title">小区：{community}</h3>
         <div className="house-map__map-gl" id="houseMapGL"></div>
       </div>
     );
