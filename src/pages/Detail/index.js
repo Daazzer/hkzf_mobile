@@ -14,7 +14,9 @@ export class Detail extends Component {
     super();
     this.state = {
       houseInfo: {
-        houseImg: []
+        houseImg: [],
+        tags: [],
+        oriented: []
       }
     };
   }
@@ -41,7 +43,17 @@ export class Detail extends Component {
     this.renderHouseInfo(id);
   }
   render() {
-    const { community, houseImg } = this.state.houseInfo;
+    const {
+      community,
+      houseImg,
+      title,
+      tags,
+      price,
+      roomType,
+      size,
+      oriented,
+      floor
+    } = this.state.houseInfo;
     return (
       <div className="house-detail">
         <NavBar
@@ -54,15 +66,13 @@ export class Detail extends Component {
         <Carousel
           autoplay
           infinite
-          beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
-          afterChange={index => console.log('slide to', index)}
           style={{ height: 252 }}
         >
           {houseImg.map(img => (
             <a
               key={img}
               href="https://lianjia.com"
-              style={{ display: 'inline-block', width: '100%', height: '252px' }}
+              style={{ display: 'inline-block', width: '100%', height: 252 }}
             >
               <img
                 src={img}
@@ -76,7 +86,15 @@ export class Detail extends Component {
             </a>
           ))}
         </Carousel>
-        <HouseInfo />
+        <HouseInfo
+          title={title}
+          tags={tags}
+          price={price}
+          roomType={roomType}
+          size={size}
+          oriented={oriented}
+          floor={floor}
+        />
         <HouseMap />
         <HouseAbout />
         <HouseProfile />
