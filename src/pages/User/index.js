@@ -22,28 +22,27 @@ export class User extends Component {
     return (
       <div className="user">
         <div className="user-title">
-          <img src="http://157.122.54.189:9060/img/profile/bg.png" />
+          <img src="http://157.122.54.189:9060/img/profile/bg.png" alt="背景" />
           <div className="user-profile">
             <div className="user-profile__avatar">
               <img src="http://157.122.54.189:9060/img/profile/avatar.png" alt="头像" />
             </div>
             <div className="user-profile__content">
               <p>游客</p>
-              <Link className="opt-btn">去登录</Link>
+              <Link className="opt-btn" to="/login">去登录</Link>
             </div>
           </div>
         </div>
         <Grid
+          className="user-menu"
           data={menus}
           columnNum={3}
           hasLine={false}
           renderItem={item =>
             item.to ? (
-              <Link to={item.to}>
-                <div className="user-menu__item">
-                  <i className={`iconfont ${item.iconfont}`} />
-                  <span>{item.name}</span>
-                </div>
+              <Link className="user-menu__item" to={item.to}>
+                <i className={`iconfont ${item.iconfont}`} />
+                <span>{item.name}</span>
               </Link>
             ) : (
               <div className="user-menu__item">
@@ -53,6 +52,9 @@ export class User extends Component {
             )
           }
         />
+        <div className="user-ad">
+          <img src="http://localhost:8080/img/profile/join.png" alt="ad" />
+        </div>
       </div>
     );
   }

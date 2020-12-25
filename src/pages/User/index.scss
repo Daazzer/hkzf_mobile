@@ -1,4 +1,5 @@
 .user {
+  margin-bottom: 50px;
   &-title {
     position: relative;
     min-height: 300px;
@@ -46,6 +47,33 @@
         color: #fff;
         background-color: #21b97a;
       }
+    }
+  }
+  &-menu {
+    a {
+      color: #333;
+    }
+    .am-grid-item {
+      height: 100px;
+    }
+    &__item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      font-size: 13px;
+      i {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+  &-ad {
+    margin-top: 10px;
+    text-align: center;
+    img {
+      width: 92%;
     }
   }
 }
