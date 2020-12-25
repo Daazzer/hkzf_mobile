@@ -1,6 +1,7 @@
 import home from './_home';
 import area from './_area';
 import houses from './_houses';
+import user from './_user';
 
 const {
   getSwiper,
@@ -23,10 +24,15 @@ const {
   getHousesCondition
 } = houses;
 
+const {
+  login
+} = user;
+
 const api = {
   ...home,
   ...area,
-  ...houses
+  ...houses,
+  ...user
 };
 
 export {
@@ -42,5 +48,6 @@ export {
   getAreaMap,
   getHouses,
   getHousesById,
-  getHousesCondition
+  getHousesCondition,
+  login
 }
