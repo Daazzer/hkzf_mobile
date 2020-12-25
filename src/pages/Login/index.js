@@ -4,6 +4,7 @@ import { NavBar, WingBlank, Toast } from 'antd-mobile';
 import { withFormik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import api from '../../utils/api';
+import storage from '../../utils/storage';
 import './index.scss';
 
 // 验证规则：
@@ -79,9 +80,15 @@ const LoginWithFormik = withFormik({
     if (status !== 200) {
       Toast.info(description);
     } else {
-      console.log(res);
-      console.log(body);
-      // props.history.goBack();
+      const token = body.token;
+      storage.setData('token', token);
+      Toast.success('登录成功', 2, () => {
+        if (!props.location.state) {
+          props.history.goBack();
+        } else {
+          props.history.replace(props.location.state.from.pathname);
+        }
+      });
     }
   }
 })(Login);
