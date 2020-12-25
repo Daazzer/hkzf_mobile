@@ -25,7 +25,8 @@ const {
 } = houses;
 
 const {
-  login
+  login,
+  registered
 } = user;
 
 const api = {
@@ -49,5 +50,6 @@ export {
   getHouses,
   getHousesById,
   getHousesCondition,
-  login
+  login,
+  registered
 }
