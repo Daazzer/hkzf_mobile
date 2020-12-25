@@ -29,7 +29,8 @@ const {
   registered,
   getFavorites,
   getFavoritesById,
-  favorites
+  favorites,
+  unFavorites
 } = user;
 
 const api = {
@@ -57,5 +58,6 @@ export {
   registered,
   getFavorites,
   getFavoritesById,
-  favorites
+  favorites,
+  unFavorites
 };

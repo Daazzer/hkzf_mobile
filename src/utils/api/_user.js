@@ -31,12 +31,19 @@ const getFavoritesById = id => http.get(`/user/favorites/${id}`);
  */
 const favorites = id => http.post(`/user/favorites/${id}`);
 
+/**
+ * 添加收藏
+ * @param {string} id 房屋的code值
+ */
+const unFavorites = id => http.delete(`/user/favorites/${id}`);
+
 const user = {
   login,
   registered,
   getFavorites,
   getFavoritesById,
-  favorites
+  favorites,
+  unFavorites
 };
 
 export default user;

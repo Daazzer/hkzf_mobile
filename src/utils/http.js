@@ -2,7 +2,7 @@ import axios from 'axios';
 import storage from './storage';
 
 const checkAuthURL = url => (
-  /^\/user(\/(((favorites|houses)(\/\w+)?)|logout))?$/.test(url)
+  /^\/user(\/(((favorites|houses)(\/[\w|-]+)?)|logout))?$/.test(url)
 );
 
 class Http {
@@ -45,6 +45,14 @@ class Http {
    */
   post(url, data) {
     return this.handleRequest(this.request.post(url, data));
+  }
+
+  /**
+   * DELETE 请求
+   * @param {string} url
+   */
+  delete(url) {
+    return this.handleRequest(this.request.delete(url));
   }
 }
 
