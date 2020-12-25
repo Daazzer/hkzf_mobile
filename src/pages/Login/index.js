@@ -1,28 +1,72 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { NavBar, WingBlank, Toast } from 'antd-mobile';
+import { withFormik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import api from '../../utils/api';
 import './index.scss';
 
+// 验证规则：
+const REG_UNAME = /^[a-zA-Z_\d]{5,8}$/;
+const REG_PWD = /^[a-zA-Z_\d]{5,12}$/;
 export class Login extends Component {
-  constructor() {
-    super();
-    this.state = {
-      username: '',
-      password: ''
-    };
-    this.handleInput = this.handleInput.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+  render() {
+    return (
+      <div className="login">
+        <NavBar
+          className="nav-header"
+          mode="light"
+          leftContent={<i className="iconfont icon-back"></i>}
+          onLeftClick={() => this.props.history.goBack()}
+        >账号登录</NavBar>
+        <WingBlank>
+          <Form className="login-form">
+            <div className="login-form__item">
+              <Field
+                name="username"
+                placeholder="请输入账号"
+              />
+            </div>
+            <ErrorMessage
+              className="login-form__message--error"
+              name="username"
+              component="div"
+            />
+            <div className="login-form__item">
+              <Field
+                name="password"
+                type="password"
+                placeholder="请输入密码"
+              />
+            </div>
+            <ErrorMessage
+              className="login-form__message--error"
+              name="password"
+              component="div"
+            />
+            <button className="login-form__submit" type="submit">登录</button>
+          </Form>
+          <div className="login-reg">
+            <Link to="/registry">还没有账号，去注册~</Link>
+          </div>
+        </WingBlank>
+      </div>
+    );
   }
+}
 
-  handleInput(e) {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  }
-
-  async handleSubmit(e) {
-    e.preventDefault();
-    const { username, password } = this.state;
+const LoginWithFormik = withFormik({
+  validationSchema: Yup.object().shape({
+    username: Yup.string()
+      .required('账号为必填项')
+      .matches(REG_UNAME, '长度为5到8位，只能出现数字、字母、下划线'),
+    password: Yup.string()
+      .required('密码为必填项')
+      .matches(REG_PWD, '长度为5到12位，只能出现数字、字母、下划线')
+  }),
+  mapPropsToValues: () => ({ username: '', password: '' }),
+  async handleSubmit(values, { props }) {
+    const { username, password } = values;
     const [err, res] = await api.login({ username, password });
 
     if (err) {
@@ -37,48 +81,9 @@ export class Login extends Component {
     } else {
       console.log(res);
       console.log(body);
+      // props.history.goBack();
     }
   }
+})(Login);
 
-  render() {
-    const { username, password } = this.state;
-    return (
-      <div className="login">
-        <NavBar
-          className="nav-header"
-          mode="light"
-          leftContent={<i className="iconfont icon-back"></i>}
-          onLeftClick={() => this.props.history.goBack()}
-        >账号登录</NavBar>
-        <WingBlank>
-          <form className="login-form">
-            <div className="login-form__item">
-              <input
-                name="username"
-                placeholder="请输入账号"
-                type="text"
-                value={username}
-                onChange={this.handleInput}
-              />
-            </div>
-            <div className="login-form__item">
-              <input
-                name="password"
-                placeholder="请输入密码"
-                type="password"
-                value={password}
-                onChange={this.handleInput}
-              />
-            </div>
-            <button className="login-form__submit" onClick={this.handleSubmit}>登录</button>
-          </form>
-          <div className="login-reg">
-            <Link to="/registry">还没有账号，去注册~</Link>
-          </div>
-        </WingBlank>
-      </div>
-    );
-  }
-}
-
-export default Login;
+export default LoginWithFormik;

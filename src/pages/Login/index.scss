@@ -20,6 +20,11 @@
         }
       }
     }
+    &__message {
+      &--error {
+        color: #f00;
+      }
+    }
     &__submit {
       width: 100%;
       height: 50px;
