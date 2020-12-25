@@ -55,6 +55,11 @@ const routes = [
     path: '/login',
     name: '登录',
     component: lazy(() => import('@/pages/Login'))
+  },
+  {
+    path: '/registry',
+    name: '注册',
+    component: lazy(() => import('@/pages/Registry'))
   }
 ];
 
