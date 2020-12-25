@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { NavBar, WingBlank, Flex, Toast } from 'antd-mobile';
 import { withFormik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import api from '../../utils/api';
 import './index.scss';
 
 export class Registry extends Component {
@@ -76,14 +77,27 @@ const RegistryWithFormik = withFormik({
     confirmPassword: Yup.string().required('密码确认不能为空')
   }),
   mapPropsToValues: () => ({ username: '', password: '', confirmPassword: '' }),
-  handleSubmit(values, { props }) {
+  async handleSubmit(values, { props }) {
     const { username, password, confirmPassword } = values;
     if (password !== confirmPassword) {
-      Toast.info('密码不一致');
+      Toast.info('密码不一致', 1);
       return;
     }
 
-    console.log(values);
+    const [err, res] = await api.registered({ username, password });
+
+    if (err) {
+      Toast.fail('注册失败');
+      return;
+    }
+
+    const { status, description } = res.data;
+
+    if (status !== 200) {
+      Toast.info(description);
+    } else {
+      console.log(res);
+    }
   }
 })(Registry);
 
