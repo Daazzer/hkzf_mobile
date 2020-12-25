@@ -50,6 +50,11 @@ const routes = [
     path: '/detail/:id',
     name: '租房详情',
     component: lazy(() => import('@/pages/Detail'))
+  },
+  {
+    path: '/login',
+    name: '登录',
+    component: lazy(() => import('@/pages/Login'))
   }
 ];
 
