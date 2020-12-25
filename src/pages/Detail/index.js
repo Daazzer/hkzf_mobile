@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { NavBar, Carousel, Toast } from 'antd-mobile';
+import { NavBar, Carousel, Toast, Modal } from 'antd-mobile';
 import HouseDetailInfo from '../../components/Detail/HouseDetailInfo';
 import HouseMap from '../../components/Detail/HouseMap';
 import HouseAbout from '../../components/Detail/HouseAbout';
@@ -7,6 +7,7 @@ import HouseProfile from '../../components/Detail/HouseProfile';
 import HouseRecommend from '../../components/Detail/HouseRecommend';
 import HouseDetailOption from '../../components/Detail/HouseDetailOption';
 import api from '../../utils/api';
+import { checkLogin } from '../../utils/auth';
 import './index.scss';
 
 export class Detail extends Component {
@@ -19,8 +20,10 @@ export class Detail extends Component {
         oriented: [],
         coord: {},
         supporting: []
-      }
+      },
+      isFavorite: false
     };
+    this.handleFavorite = this.handleFavorite.bind(this);
   }
 
   async renderHouseInfo(id) {
@@ -40,10 +43,70 @@ export class Detail extends Component {
     this.setState({ houseInfo });
   }
 
+  async checkFavorite(id) {
+    if (!checkLogin()) {
+      return;
+    }
+
+    const [err, res] = await api.getFavoritesById(id);
+
+    if (err) {
+      Toast.fail('查询收藏状态失败');
+      return;
+    }
+
+    const status = res.data.status;
+
+    if (status === 200) {
+      const isFavorite = res.data.body.isFavorite;
+      this.setState({ isFavorite });
+    }
+  }
+
+  async handleFavorite() {
+    const { history, location, match } = this.props;
+    let isFavorite = this.state.isFavorite;
+
+    if (!checkLogin()) {
+      Modal.alert('提示', '登录后才能收藏房源，是否去登录?', [
+        { text: '取消' },
+        {
+          text: '去登录',
+          onPress: () => history.replace('/login', { from: location })
+        }
+      ]);
+      return;
+    }
+
+    let result;
+    const id = match.params.id;
+
+    if (isFavorite) {
+      result = await api.unFavorites(id);
+    } else {
+      result = await api.favorites(id);
+    }
+
+    const [err, res] = result;
+
+    if (err) {
+      Toast.fail((isFavorite ? '取消' : '') + '收藏失败');
+      return;
+    }
+
+    const desc = res.data.description;
+    isFavorite = desc === '添加收藏';
+
+    Toast.info(desc);
+    this.setState({ isFavorite });
+  }
+
   componentDidMount() {
     const id = this.props.match.params.id;
     this.renderHouseInfo(id);
+    this.checkFavorite(id);
   }
+
   render() {
     const {
       community,
@@ -59,6 +122,7 @@ export class Detail extends Component {
       supporting,
       description
     } = this.state.houseInfo;
+    const { isFavorite } = this.state;
     return (
       <div className="house-detail">
         <NavBar
@@ -106,7 +170,10 @@ export class Detail extends Component {
         <HouseAbout supporting={supporting} />
         <HouseProfile description={description} />
         <HouseRecommend />
-        <HouseDetailOption />
+        <HouseDetailOption
+          onFavorite={this.handleFavorite}
+          isFavorite={isFavorite}
+        />
       </div>
     );
   }
