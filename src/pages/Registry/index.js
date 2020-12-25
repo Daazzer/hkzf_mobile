@@ -4,8 +4,12 @@ import { NavBar, WingBlank, Flex, Toast } from 'antd-mobile';
 import { withFormik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import api from '../../utils/api';
+import storage from '../../utils/storage';
 import './index.scss';
 
+// 验证规则：
+const REG_UNAME = /^[a-zA-Z_\d]{5,8}$/;
+const REG_PWD = /^[a-zA-Z_\d]{5,12}$/;
 export class Registry extends Component {
   render() {
     return (
@@ -72,9 +76,15 @@ export class Registry extends Component {
 
 const RegistryWithFormik = withFormik({
   validationSchema: Yup.object().shape({
-    username: Yup.string().required('用户名不能为空'),
-    password: Yup.string().required('密码不能为空'),
-    confirmPassword: Yup.string().required('密码确认不能为空')
+    username: Yup.string()
+      .required('用户名不能为空')
+      .matches(REG_UNAME, '长度为5到8位，只能出现数字、字母、下划线'),
+    password: Yup.string()
+      .required('密码不能为空')
+      .matches(REG_PWD, '长度为5到8位，只能出现数字、字母、下划线'),
+    confirmPassword: Yup.string()
+      .required('密码确认不能为空')
+      .matches(REG_PWD, '长度为5到8位，只能出现数字、字母、下划线')
   }),
   mapPropsToValues: () => ({ username: '', password: '', confirmPassword: '' }),
   async handleSubmit(values, { props }) {
@@ -91,12 +101,16 @@ const RegistryWithFormik = withFormik({
       return;
     }
 
-    const { status, description } = res.data;
+    const { status, description, body } = res.data;
 
     if (status !== 200) {
       Toast.info(description);
     } else {
-      console.log(res);
+      const token = body.toke;
+      storage.setData('token', token);
+      Toast.info('注册成功，等待返回上一个页面', 2, () => {
+        props.history.goBack();
+      });
     }
   }
 })(Registry);
