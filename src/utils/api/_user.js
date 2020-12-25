@@ -16,9 +16,27 @@ const login = data => http.post('/user/login', data);
  */
 const registered = data => http.post('/user/registered', data);
 
+/** 查看收藏列表 */
+const getFavorites = () => http.get('/user/favorites');
+
+/**
+ * 房屋是否收藏
+ * @param {string} id 房屋的code值
+ */
+const getFavoritesById = id => http.get(`/user/favorites/${id}`);
+
+/**
+ * 添加收藏
+ * @param {string} id 房屋的code值
+ */
+const favorites = id => http.post(`/user/favorites/${id}`);
+
 const user = {
   login,
-  registered
+  registered,
+  getFavorites,
+  getFavoritesById,
+  favorites
 };
 
 export default user;

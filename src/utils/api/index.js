@@ -26,7 +26,10 @@ const {
 
 const {
   login,
-  registered
+  registered,
+  getFavorites,
+  getFavoritesById,
+  favorites
 } = user;
 
 const api = {
@@ -51,5 +54,8 @@ export {
   getHousesById,
   getHousesCondition,
   login,
-  registered
-}
+  registered,
+  getFavorites,
+  getFavoritesById,
+  favorites
+};
