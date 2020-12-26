@@ -104,8 +104,6 @@ http://157.122.54.189:9060/
 
   
 
-
-
 ## 项目路由
 
 | 路径          | 描述     |
@@ -418,9 +416,39 @@ export {
 
 ### 首页
 
+- 页面加载时获取本地数据中的当前城市，如果没有当前城市的数据，则调用百度地图 API 进行 IP 定位当前城市并保存到本地
+
+  ```js
+  // ... 
+  async componentDidMount() {
+    let city = storage.getData('city');  // 从本地获取当前城市数据
+    if (!city) {
+      city = await this.getCity();
+      storage.setData('city', city);
+    }
+    this.setState({ city }, () => {
+      this.renderRentItems(this.state.city);
+      this.renderNewsItems(this.state.city);
+    });
+  }
+  // ...
+  ```
+
+  
+
 - 首页轮播图渲染
+
 - 搜索栏布局与链接跳转：跳转到切换城市页、地图页
+
 - 分类导航栏渲染
+
 - 租房推荐列表渲染
+
+  - 推荐列表无数据状态渲染
+  - 推荐列表加载状态渲染
+
 - 最新资讯列表渲染
+
+  - 最新资讯列表无数据状态渲染
+  - 推荐列表加载状态渲染
 
