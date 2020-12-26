@@ -27,6 +27,8 @@ const {
 const {
   login,
   registered,
+  getUserInfo,
+  setUserInfo,
   getFavorites,
   getFavoritesById,
   favorites,
@@ -56,6 +58,8 @@ export {
   getHousesCondition,
   login,
   registered,
+  getUserInfo,
+  setUserInfo,
   getFavorites,
   getFavoritesById,
   favorites,

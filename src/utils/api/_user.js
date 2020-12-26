@@ -16,6 +16,19 @@ const login = data => http.post('/user/login', data);
  */
 const registered = data => http.post('/user/registered', data);
 
+/** 获取用户的信息资料 */
+const getUserInfo = () => http.get('/user');
+
+/**
+ * 更新用户的数据
+ * @param {Object} data 需要更新的数据
+ * @param {string} data.avatar 用户头像
+ * @param {string} data.gender 用户性别
+ * @param {string} data.nickname 用户昵称
+ * @param {string} data.phone 用户电话
+ */
+const setUserInfo = data => http.post('/user', data);
+
 /** 查看收藏列表 */
 const getFavorites = () => http.get('/user/favorites');
 
@@ -40,6 +53,8 @@ const unFavorites = id => http.delete(`/user/favorites/${id}`);
 const user = {
   login,
   registered,
+  getUserInfo,
+  setUserInfo,
   getFavorites,
   getFavoritesById,
   favorites,
