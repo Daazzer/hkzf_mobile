@@ -63,8 +63,10 @@ class Home extends Component {
       ...rentItem,
       imgSrc: baseURL + rentItem.imgSrc
     }));
-    this.setState({ loading: false });
-    this.setState({ rentItems });
+    this.setState({
+      loading: false,
+      rentItems
+    });
   }
 
   async renderNewsItems(city) {
@@ -83,8 +85,10 @@ class Home extends Component {
       ...newsItem,
       imgSrc: baseURL + newsItem.imgSrc
     }));
-    this.setState({ newsItems });
-    this.setState({ loading: false });
+    this.setState({
+      loading: false,
+      newsItems
+    });
   }
 
   async componentDidMount() {
