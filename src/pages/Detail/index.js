@@ -8,6 +8,7 @@ import HouseRecommend from '../../components/Detail/HouseRecommend';
 import HouseDetailOption from '../../components/Detail/HouseDetailOption';
 import api from '../../utils/api';
 import { checkLogin } from '../../utils/auth';
+import storage from '../../utils/storage';
 import './index.scss';
 
 export class Detail extends Component {
@@ -60,6 +61,8 @@ export class Detail extends Component {
     if (status === 200) {
       const isFavorite = res.data.body.isFavorite;
       this.setState({ isFavorite });
+    } else {
+      storage.setData('token', '');
     }
   }
 
