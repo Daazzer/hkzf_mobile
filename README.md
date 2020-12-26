@@ -452,3 +452,53 @@ export {
   - 最新资讯列表无数据状态渲染
   - 推荐列表加载状态渲染
 
+
+
+### 城市列表页
+
+- 城市列表数据的获取
+
+- 热门城市数据的获取
+
+- 城市定位，本地数据判断，如果有城市定位的本地数据，则不向后台发送请求
+
+- 获取所有城市后，对城市数据进行处理，将城市名按拼音首字母进行排序，返回城市拼音索引数组用于后续的首字母索引栏
+
+  ```js
+  // ... 
+  formatCityData(cityItems) {
+    const cities = {}
+    cityItems.forEach(cityItem => {
+       // *** 获取城市的拼音首字母，转换为大写 ***
+      const firstLetter = cityItem.short[0].toUpperCase();
+      // *** 判断是否已经保存了首字母，如果保存了则往后添加，否则新建一个数组 ***
+      if (cities[firstLetter]) {
+        cities[firstLetter].push(cityItem);
+      } else {
+        cities[firstLetter] = [cityItem];
+      }
+    });
+    // *** 将首字母对象的键保存到一个数组中并排序 ***
+    const cityIndexes = Object.keys(cities).sort();
+    return {
+      cityIndexes,
+      cities
+    }
+  }
+  // ...
+  ```
+  
+- 在城市拼音索引数组开头加入 `#` 与 `hot` 项，代表当前城市与热门城市
+
+- 顶部导航栏渲染
+
+- 城市列表索引栏渲染，点击每个拼音页面滚动到对应的城市列表，并且高亮当前的索引项
+
+- 城市列表渲染
+
+  - `react-virtualized` 的可视区渲染优化，限制页面中 DOM 的显示数量
+  - 由于 `react-virtualized` 组件内部特性，计算每项的固定高度
+  - 每次点击当前城市项则将当前城市的数据保存到本地
+  - 初始化时调用 `measureAllRows` 方法校正 `react-virtualized` 高度，用于索引滚动
+  - 利用 `react-virtualized` 的 `<AutoSizer>` 组件适配尺寸大小
+
