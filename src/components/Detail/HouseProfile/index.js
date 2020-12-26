@@ -9,7 +9,7 @@ export class HouseProfile extends Component {
         <h3 className="house-profile__title">房源概述</h3>
         <div className="house-profile-user">
           <div className="house-profile-user__info">
-            <img src="http://localhost:8080/img/avatar.png" alt="头像" />
+            <img src="http://157.122.54.189:9060/img/avatar.png" alt="头像" />
             <div className="user-content">
               <p>王女士</p>
               <div className="user-content__auth">
