@@ -3,8 +3,32 @@ import { TabBar, ActivityIndicator } from 'antd-mobile';
 import {
   BrowserRouter,
   Switch,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom';
+import { checkLogin } from '../utils/auth';
+
+const authRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={routeProps => {
+      if (checkLogin()) {
+        return <Component {...routeProps} />;
+      } else {
+        return (
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: {
+                from: routeProps.location
+              }
+            }}
+          />
+        );
+      }
+    }}
+  />
+);
 
 const routes = [
   {
@@ -60,6 +84,24 @@ const routes = [
     path: '/registry',
     name: '注册',
     component: lazy(() => import('@/pages/Registry'))
+  },
+  {
+    path: '/favorite',
+    name: '收藏',
+    auth: true,
+    component: lazy(() => import('@/pages/Favorite'))
+  },
+  {
+    path: '/rent',
+    name: '我的租房',
+    auth: true,
+    component: lazy(() => import('@/pages/Rent')),
+  },
+  {
+    path: '/rent/add',
+    name: '成为房主',
+    auth: true,
+    component: lazy(() => import('@/pages/Rent/Add')),
   }
 ];
 
@@ -96,24 +138,33 @@ class RouterView extends Component {
   render() {
     return (
       <Switch>
-        {routes.map(route =>
-          <Route
-            key={route.name}
-            path={route.path}
-            exact={route.exact}
-            children={routeProps => {
-              if (route.navTab) {
-                return (
-                  <>
-                    <route.component {...routeProps} />
-                    <RouterTabNav {...routeProps} />
-                  </>
-                );
-              }
-              return <route.component {...routeProps} />;
-            }
-          } />
-        )}
+        {routes.map(route => {
+          if (route.auth) {
+            return authRoute({
+              component: route.component,
+              key: route.name
+            });
+          } else {
+            return (
+              <Route
+                key={route.name}
+                path={route.path}
+                exact={route.exact}
+                children={routeProps => {
+                  if (route.navTab) {
+                    return (
+                      <>
+                        <route.component {...routeProps} />
+                        <RouterTabNav {...routeProps} />
+                      </>
+                    );
+                  }
+                  return <route.component {...routeProps} />;
+                }
+              } />
+            );
+          }
+        })}
       </Switch>
     );
   }
