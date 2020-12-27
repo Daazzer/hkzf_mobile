@@ -502,3 +502,67 @@ export {
   - 初始化时调用 `measureAllRows` 方法校正 `react-virtualized` 高度，用于索引滚动
   - 利用 `react-virtualized` 的 `<AutoSizer>` 组件适配尺寸大小
 
+### 找房页
+
+- 城市定位功能，上同
+
+- 顶部导航栏
+  - 返回按钮，点击返回上一页
+  - 搜索栏 `<SearchBar>` 组件复用
+  - 地图图标点击跳转到地图页
+  
+- 数据筛选栏渲染
+  - 筛选栏组件拆分 `<Filter>` `<FilterTitle>` `<FilterPicker>` `<FilterMore>` `<FilterFooter>`
+  
+  - 点击对应的筛选项标题会显示不同的 `Picker` 进行数据筛选
+  
+  - `<FilterPicker>` 组件复用，前三个筛选标题项使用 `<FilterPicker>`
+  
+  - 使用 `react-spring` 动画库显示筛选项开关的遮罩、与 `<FilterMore>` 组件过渡效果
+  
+  - `<FilterPicker>` 组件每次激活时会传入不同的当前选中值，`this.state` 引用父组件传入的值
+  
+    ```js
+    // /src/components/FindHouse/FilterPicker/index.js
+    // ...
+    constructor(props) {
+      super(props);
+      this.state = {
+        value: props.defaultValue
+      };
+    	// ...
+    }
+    // ...
+    ```
+  
+    
+  
+  - `<FilterPicker>` 组件激活状态时切换不同的筛选标题时手动改变组件 `key` 值卸载组件，触发组件的 `constructor` 函数
+  
+  - 选择 `<FilterPicker>` 组件的非默认选项会将对应的筛选标题保持高亮
+  
+  - `<FilterMore>` 组件的数据渲染
+  
+  - 使用非受控组件的形式引用 `<FilterMore>` 组件，在点击兄弟组件时，调用 `<FilterMore>` 的 `setState()` 方法
+  
+    ```js
+    // /src/components/FindHouse/Filter/index.js
+    // ...
+    onOpen(activeType) {
+      this.setState({ activeType });
+      if (activeType === 'more') {
+        this.filterMoreRef.current.setState({ selectedValues: [...this.state.selectedData.more] });
+      }
+      // ...
+    }
+    // ...
+    ```
+  
+- 封装 `<Sticky>` 组件配合 `react-virtualized` 的 `<WindowScroller>` 组件实现 `<Filter>` 筛选栏的吸顶效果
+
+- 分页请求租房列表数据项
+
+  - 配合 `react-virtualized` 的 `<InfiniteLoader>` 组件的 `loadMoreRows` 钩子实现瀑布流数据加载，每次滚动出不可见的区域时向后端请求房源信息数据加载下一页数据
+  - 数据项的加载状态显示
+  - 列表空数据状态显示
+
