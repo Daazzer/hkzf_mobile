@@ -28,8 +28,6 @@ class Filter extends Component {
   }
 
   onOpen(activeType) {
-    // console.log(this.filterMoreRef.current.setState({ selectedValues: this.state.selectedData.more }));
-
     this.setState({ activeType });
     if (activeType === 'more') {
       this.filterMoreRef.current.setState({ selectedValues: [...this.state.selectedData.more] });

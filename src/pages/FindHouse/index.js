@@ -219,14 +219,12 @@ export class FindHouse extends Component {
 
     this.setState({ city });
     this.renderHouseInfoItems(city.value, 1, 20);
-    this.forceUpdate();
   }
 
   render() {
     return (
       <WindowScroller onScroll={this.onScroll.bind(this)}>
-        {
-          () =>
+        {() =>
           <div className="findhouse">
             <NavBar
               className="nav-header"
