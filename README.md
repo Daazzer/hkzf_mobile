@@ -566,3 +566,70 @@ export {
   - 数据项的加载状态显示
   - 列表空数据状态显示
 
+### 地图页
+
+- 头部导航栏显示，点击返回上一个页面
+- 百度地图引入
+  - 当前城市定位，如果本地数据没有定位城市，则调用百度地图定位 API
+  - 根据定位到的坐标渲染地图，并以坐标为中心
+  - 向后端请求房源信息，并且根据返回的数据中的坐标在地图上渲染标记
+  - 添加地图标记的点击事件，点击标记时，显示下一级区域的租房位置信息
+  - 自定义地图标记
+  - 每次显示标记信息时，调用百度地图自适应缩放级别 API `setViewport`
+  - 显示第三级房屋位置信息时，再次点击地图标记这弹出底部房屋列表选项卡，并且调用地图 `panBy` API 将镜头平移到标记中
+  - 确保平移的位置能留出显示租房信息列表的显示空间
+
+### 租房详情页
+
+- 顶部导航栏
+
+- 租房图片轮播
+
+- `<HouseDetailInfo>` 组件显示房屋详情信息
+
+- `<HouseMap>` 显示房屋地图定位
+
+  - 自定义标记样式
+  - 由于地图位置依赖父组件的定位数据，所以将这个组件的地图加载时机设置到 `componentDidUpdate` 生命周期中，在属性值更新时再渲染地图
+
+- `<HouseAbout>` 组件显示房屋配套信息
+
+- `<HouseProfile>` 显示房屋描述信息、以及房东信息
+
+- `<HouseRecommend>` 组件显示推荐列表
+
+- `<HouseDetailOption>` 显示底部操作栏
+
+  - 收藏功能，如果未登录，则提示用户是否登录，登录成功后才可以添加/取消收藏
+
+- 每次加载页面都会检测当前房屋收藏状态，但是如果为登录，则不发送检测请求，如果请求后检测到 token 过期，则清除本地 token
+
+  ```js
+  // ...
+  async checkFavorite(id) {
+    if (!checkLogin()) {
+      return;
+    }
+  
+    const [err, res] = await api.getFavoritesById(id);
+  
+    if (err) {
+      Toast.fail('查询收藏状态失败');
+      return;
+    }
+  
+    const status = res.data.status;
+  
+    if (status === 200) {
+      const isFavorite = res.data.body.isFavorite;
+      this.setState({ isFavorite });
+    } else {
+      // *** 如果token过期，则清除本地 token ***
+      storage.setData('token', '');
+    }
+  }
+  // ...
+  ```
+
+  
+
